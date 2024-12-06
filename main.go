@@ -1,22 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"embed"
 	"fmt"
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
-	"image"
 	"image/color"
 	_ "image/png"
 	"log"
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/fogleman/gg"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 const (
@@ -31,12 +31,12 @@ const (
 var imageFS embed.FS
 
 var (
-	normalText  font.Face
-	bigText     font.Face
-	boardImage  *ebiten.Image
-	symbolImage *ebiten.Image
-	textImage   = ebiten.NewImage(sWidth, sWidth)
-	gameImage   = ebiten.NewImage(sWidth, sWidth)
+	normalText font.Face
+	bigText    font.Face
+	boardImage *ebiten.Image
+	// symbolImage *ebiten.Image
+	// textImage   = ebiten.NewImage(sWidth, sWidth)
+	gameImage = ebiten.NewImage(sWidth, sWidth)
 )
 
 type Game struct {
@@ -128,31 +128,51 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) DrawSymbol(x, y int, sym string) {
-	imageBytes, err := imageFS.ReadFile(fmt.Sprintf("images/%v.png", sym))
-	if err != nil {
-		log.Fatal(err)
-	}
-	decoded, _, err := image.Decode(bytes.NewReader(imageBytes))
-	if err != nil {
-		log.Fatal(err)
-	}
-	symbolImage = ebiten.NewImageFromImage(decoded)
-	opSymbol := &ebiten.DrawImageOptions{}
-	opSymbol.GeoM.Translate(float64((160*(x+1)-160)+7), float64((160*(y+1)-160)+7))
+	const gridSize = 160
+	dc := gg.NewContext(gridSize, gridSize)
+	dc.Clear()
 
-	gameImage.DrawImage(symbolImage, opSymbol)
+	// Draw O or X
+	if sym == "O" {
+		dc.SetColor(color.White)
+		dc.DrawCircle(gridSize/2, gridSize/2, gridSize/2-10)
+		dc.SetLineWidth(15)
+		dc.Stroke()
+	} else if sym == "X" {
+		dc.SetColor(color.White)
+		dc.SetLineWidth(15)
+		dc.DrawLine(20, 20, gridSize-20, gridSize-20)
+		dc.DrawLine(20, gridSize-20, gridSize-20, 20)
+		dc.Stroke()
+	}
+
+	// Translate the symbol to the appropriate grid position
+	opSymbol := &ebiten.DrawImageOptions{}
+	opSymbol.GeoM.Translate(float64(x*gridSize), float64(y*gridSize))
+	gameImage.DrawImage(ebiten.NewImageFromImage(dc.Image()), opSymbol)
+}
+
+func generateBoardImage() *ebiten.Image {
+	const gridSize = 160
+	dc := gg.NewContext(sWidth, sWidth)
+	dc.SetColor(color.Black)
+	dc.Clear()
+
+	// Draw grid lines
+	dc.SetColor(color.White)
+	for i := 1; i <= 2; i++ {
+		dc.DrawLine(float64(i*gridSize), 0, float64(i*gridSize), sWidth)
+		dc.DrawLine(0, float64(i*gridSize), sWidth, float64(i*gridSize))
+	}
+	dc.SetLineWidth(5)
+	dc.Stroke()
+
+	return ebiten.NewImageFromImage(dc.Image())
 }
 
 func (g *Game) Init() {
-	imageBytes, err := imageFS.ReadFile("images/board.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	decoded, _, err := image.Decode(bytes.NewReader(imageBytes))
-	if err != nil {
-		log.Fatal(err)
-	}
-	boardImage = ebiten.NewImageFromImage(decoded)
+	// imageBytes, err := imageFS.ReadFile("images/board.png")
+	boardImage = generateBoardImage()
 	re := newRandom().Intn(2)
 	if re == 0 {
 		g.playing = "O"
