@@ -16,10 +16,10 @@ func keyChangeColor(key ebiten.Key, screen *ebiten.Image) {
 		var colorText color.RGBA
 		colorChange := 255 - (255 / 60 * uint8(inpututil.KeyPressDuration(key)))
 		if key == ebiten.KeyEscape {
-			msgText = fmt.Sprintf("CLOSING...")
+			msgText = "CLOSING..."
 			colorText = color.RGBA{R: 255, G: colorChange, B: colorChange, A: 255}
 		} else if key == ebiten.KeyR {
-			msgText = fmt.Sprintf("RESETING...")
+			msgText = "RESETING..."
 			colorText = color.RGBA{R: colorChange, G: 255, B: 255, A: 255}
 		}
 		text.Draw(screen, msgText, normalText, sWidth/2, sHeight-30, colorText)

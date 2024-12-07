@@ -22,8 +22,6 @@ func (g *Game) Update() error {
 	switch g.state {
 	case 0:
 		g.Init()
-		break
-
 	case 1:
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			mx, my := ebiten.CursorPosition()
@@ -41,12 +39,10 @@ func (g *Game) Update() error {
 				g.round++
 			}
 		}
-		break
 	case 2:
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			g.Load()
 		}
-		break
 	}
 	if inpututil.KeyPressDuration(ebiten.KeyR) == 60 {
 		g.Load()
