@@ -13,16 +13,22 @@ func newRandom() *rand.Rand {
 func (g *Game) CheckWin() string {
 	for i, _ := range g.gameBoard {
 		if g.gameBoard[i][0] == g.gameBoard[i][1] && g.gameBoard[i][1] == g.gameBoard[i][2] {
-			return g.gameBoard[i][0]
+			if g.gameBoard[i][0] != "" {
+				return g.gameBoard[i][0]
+			}
 		}
 	}
 	for i, _ := range g.gameBoard {
 		if g.gameBoard[0][i] == g.gameBoard[1][i] && g.gameBoard[1][i] == g.gameBoard[2][i] {
-			return g.gameBoard[0][i]
+			if g.gameBoard[0][i] != "" {
+				return g.gameBoard[0][i]
+			}
 		}
 	}
 	if (g.gameBoard[0][0] == g.gameBoard[1][1] && g.gameBoard[1][1] == g.gameBoard[2][2]) || (g.gameBoard[0][2] == g.gameBoard[1][1] && g.gameBoard[1][1] == g.gameBoard[2][0]) {
-		return g.gameBoard[1][1]
+		if g.gameBoard[1][1] != "" {
+			return g.gameBoard[1][1]
+		}
 	}
 	if g.round == 8 {
 		return "tie"
