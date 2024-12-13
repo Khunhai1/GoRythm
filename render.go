@@ -47,7 +47,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	text.Draw(screen, msg, normalText, mx, my, color.RGBA{G: 255, A: 255})
 }
 
-func (g *Game) DrawSymbol(x, y int, sym string) {
+func (g *Game) DrawSymbol(sym string) *ebiten.Image {
 	const gridSize = 160
 	dc := gg.NewContext(gridSize, gridSize)
 	dc.Clear()
@@ -66,8 +66,17 @@ func (g *Game) DrawSymbol(x, y int, sym string) {
 		dc.Stroke()
 	}
 
-	// Translate the symbol to the appropriate grid position
-	opSymbol := &ebiten.DrawImageOptions{}
-	opSymbol.GeoM.Translate(float64(x*gridSize), float64(y*gridSize))
-	gameImage.DrawImage(ebiten.NewImageFromImage(dc.Image()), opSymbol)
+	return ebiten.NewImageFromImage(dc.Image())
+}
+
+func (g *Game) PlaceSymbol(x, y int, sym string) {
+	if sym == "O" {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(OImage, op)
+	} else if sym == "X" {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(XImage, op)
+	}
 }

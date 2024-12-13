@@ -27,11 +27,11 @@ func (g *Game) Update() error {
 			mx, my := ebiten.CursorPosition()
 			if mx/160 < 3 && mx >= 0 && my/160 < 3 && my >= 0 && g.gameBoard[mx/160][my/160] == "" {
 				if g.round%2 == 0+g.alter {
-					g.DrawSymbol(mx/160, my/160, "O")
+					g.PlaceSymbol(mx/160, my/160, "O")
 					g.gameBoard[mx/160][my/160] = "O"
 					g.playing = "X"
 				} else {
-					g.DrawSymbol(mx/160, my/160, "X")
+					g.PlaceSymbol(mx/160, my/160, "X")
 					g.gameBoard[mx/160][my/160] = "X"
 					g.playing = "O"
 				}

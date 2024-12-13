@@ -9,9 +9,12 @@ import (
 
 var boardImage *ebiten.Image
 var gameImage = ebiten.NewImage(sWidth, sWidth)
+var XImage, OImage *ebiten.Image
 
 func (g *Game) Init() {
 	boardImage = generateBoardImage()
+	XImage = g.DrawSymbol("X")
+	OImage = g.DrawSymbol("O")
 	re := newRandom().Intn(2)
 	if re == 0 {
 		g.playing = "O"
