@@ -10,7 +10,7 @@ import (
 
 const (
 	fontSize    = 15
-	bigFontSize = 100
+	bigFontSize = 50
 	dpi         = 72
 )
 

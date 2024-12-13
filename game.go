@@ -1,55 +1,60 @@
 package main
 
 import (
-	"os"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Game struct {
-	playing   string
-	state     int
-	gameBoard [3][3]string
-	round     int
-	pointsO   int
-	pointsX   int
-	win       string
-	alter     int
+	playing       string
+	pointsO       int
+	pointsX       int
+	win           string
+	alter         int
+	difficulty    int
+	countdownTime time.Time
+	countdown     int
 }
 
+const (
+	StateMenu = iota
+	StateLoading
+	StatePlaying
+	StatePause
+	StateGameOver
+)
+
+var gameState = StateMenu
+
+// Handle game logic
 func (g *Game) Update() error {
-	switch g.state {
-	case 0:
-		g.Init()
-	case 1:
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-			mx, my := ebiten.CursorPosition()
-			if mx/160 < 3 && mx >= 0 && my/160 < 3 && my >= 0 && g.gameBoard[mx/160][my/160] == "" {
-				if g.round%2 == 0+g.alter {
-					g.PlaceSymbol(mx/160, my/160, "O")
-					g.gameBoard[mx/160][my/160] = "O"
-					g.playing = "X"
-				} else {
-					g.PlaceSymbol(mx/160, my/160, "X")
-					g.gameBoard[mx/160][my/160] = "X"
-					g.playing = "O"
-				}
-				g.wins(g.CheckWin())
-				g.round++
+	switch gameState {
+	case StateMenu:
+		if ebiten.IsKeyPressed(ebiten.KeyEnter) {
+			gameState = StateLoading
+			g.countdownTime = time.Now()
+			g.countdown = 3
+		}
+		if ebiten.IsKeyPressed(ebiten.Key1) {
+			g.difficulty = 1
+		}
+		if ebiten.IsKeyPressed(ebiten.Key2) {
+			g.difficulty = 2
+		}
+		if ebiten.IsKeyPressed(ebiten.Key3) {
+			g.difficulty = 3
+		}
+	case StateLoading:
+		if g.countdown > 0 {
+			elapsed := time.Since(g.countdownTime)
+			if elapsed >= time.Second {
+				g.countdownTime = time.Now()
+				g.countdown--
 			}
+		} else {
+			gameState = StatePlaying
 		}
-	case 2:
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-			g.Load()
-		}
-	}
-	if inpututil.KeyPressDuration(ebiten.KeyR) == 60 {
-		g.Load()
-		g.ResetPoints()
-	}
-	if inpututil.KeyPressDuration(ebiten.KeyEscape) == 60 {
-		os.Exit(0)
 	}
 	return nil
 }
