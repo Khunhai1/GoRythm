@@ -31,7 +31,6 @@ var gameState = StateMenu
 
 // Handle game logic
 func (g *Game) Update() error {
-	g.Init()
 	switch gameState {
 	case StateMenu:
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
@@ -99,6 +98,7 @@ func (g *Game) Update() error {
 		g.board = [3][3]string{}
 		g.win = ""
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			g.Init()
 			gameState = StateMenu
 		}
 	}
