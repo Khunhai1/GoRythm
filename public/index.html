@@ -6,7 +6,7 @@
     <script>
         const go = new Go();
         WebAssembly.instantiateStreaming(
-            fetch("GopherTicTacToe.wasm"), go.importObject).then((result) => {
+            fetch("main.wasm"), go.importObject).then((result) => {
                 go.run(result.instance);
             });
     </script>
