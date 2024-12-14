@@ -11,19 +11,22 @@ import (
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	if gameState == StateMenu {
-		g.drawMenu(screen)
+		g.DrawMenu(screen)
 		return
 	}
 	if gameState == StateLoading {
-		g.drawTimer(screen)
+		g.DrawTimer(screen)
 	}
 	// Draw the game elements when playing
 	if gameState == StatePlaying {
-		g.drawGame(screen)
+		g.DrawGame(screen)
+	}
+	if gameState == StateGameOver {
+		g.DrawGameOver(screen)
 	}
 }
 
-func (g *Game) drawMenu(screen *ebiten.Image) {
+func (g *Game) DrawMenu(screen *ebiten.Image) {
 	msgTitle := "GopherTicTacToe"
 	text.Draw(screen, msgTitle, bigText, 30, 100, color.White)
 	msgDifficulty := "Choose difficulty:"
@@ -51,7 +54,7 @@ func (g *Game) drawMenu(screen *ebiten.Image) {
 	text.Draw(screen, msgStart, normalText, sWidth/2, sHeight/2, color.White)
 }
 
-func (g *Game) drawTimer(screen *ebiten.Image) {
+func (g *Game) DrawTimer(screen *ebiten.Image) {
 	// Make a countdown timer of 3 seconds
 	if g.countdown > 0 {
 		msgTimer := fmt.Sprintf("%v", g.countdown)
@@ -62,7 +65,8 @@ func (g *Game) drawTimer(screen *ebiten.Image) {
 	}
 }
 
-func (g *Game) drawGame(screen *ebiten.Image) {
+func (g *Game) DrawGame(screen *ebiten.Image) {
+	screen.DrawImage(boardImage, nil)
 	screen.DrawImage(gameImage, nil)
 	// mx, my := ebiten.CursorPosition()
 
@@ -75,4 +79,13 @@ func (g *Game) drawGame(screen *ebiten.Image) {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
 		text.Draw(screen, msgWin, bigText, 70, 200, color.RGBA{G: 50, B: 200, A: 255})
 	}
+}
+
+func (g *Game) DrawGameOver(screen *ebiten.Image) {
+	gameImage.Clear()
+	boardImage.Clear()
+	msgGameOver := "Game Over"
+	text.Draw(screen, msgGameOver, bigText, 70, 200, color.White)
+	msgPressEnter := "Press ENTER to play again"
+	text.Draw(screen, msgPressEnter, normalText, 70, 300, color.White)
 }
