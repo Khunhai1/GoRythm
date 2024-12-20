@@ -26,6 +26,7 @@ func (g *Game) placeSymbol(x int, y int) {
 			opSymbol.GeoM.Translate(float64(x), float64(y))
 			gameImage.DrawImage(OImage, opSymbol)
 			g.switchPlayer()
+			g.player = "ai"
 		}
 	case "X":
 		if g.board[x/160][y/160] == "" {
@@ -34,6 +35,7 @@ func (g *Game) placeSymbol(x int, y int) {
 			opSymbol.GeoM.Translate(float64(x), float64(y))
 			gameImage.DrawImage(XImage, opSymbol)
 			g.switchPlayer()
+			g.player = "ai"
 		}
 	}
 	g.rounds++
@@ -74,4 +76,25 @@ func (g *Game) CheckWin() {
 		g.win = g.board[0][2]
 		return
 	}
+}
+
+func (g *Game) EasyCpu() {
+	r := newRandom()
+	var x, y int
+	for {
+		x = r.Intn(3)
+		y = r.Intn(3)
+		if g.board[x][y] == "" {
+			break
+		}
+	}
+	g.board[x][y] = g.playing
+	opSymbol := &ebiten.DrawImageOptions{}
+	opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
+	if g.playing == "O" {
+		gameImage.DrawImage(OImage, opSymbol)
+	} else {
+		gameImage.DrawImage(XImage, opSymbol)
+	}
+	g.switchPlayer()
 }

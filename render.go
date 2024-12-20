@@ -70,15 +70,11 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	screen.DrawImage(gameImage, nil)
 	// mx, my := ebiten.CursorPosition()
 
-	msgFPS := fmt.Sprintf("TPS: %0.2f\nFPS: %0.2f", ebiten.CurrentTPS(), ebiten.CurrentFPS())
-	text.Draw(screen, msgFPS, normalText, sWidth-100, 30, color.White)
-
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
 	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)
-	if g.win != "" {
-		msgWin := fmt.Sprintf("%v wins!", g.win)
-		text.Draw(screen, msgWin, bigText, 70, 200, color.RGBA{G: 50, B: 200, A: 255})
-	}
+
+	msgPlayer := fmt.Sprintf("Player: %v", g.playing)
+	text.Draw(screen, msgPlayer, normalText, 10, sHeight-50, color.White)
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
@@ -88,4 +84,13 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	text.Draw(screen, msgGameOver, bigText, 70, 200, color.White)
 	msgPressEnter := "Press ENTER to play again"
 	text.Draw(screen, msgPressEnter, normalText, 70, 300, color.White)
+	if g.win != "" {
+		msgWin := fmt.Sprintf("%v wins!", g.win)
+		text.Draw(screen, msgWin, bigText, 70, 100, color.RGBA{G: 50, B: 200, A: 255})
+	} else {
+		msgDraw := "It's a draw!"
+		text.Draw(screen, msgDraw, bigText, 70, 100, color.RGBA{G: 50, B: 200, A: 255})
+	}
+	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
+	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)
 }

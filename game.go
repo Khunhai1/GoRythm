@@ -18,6 +18,7 @@ type Game struct {
 	countdownTime time.Time
 	countdown     int
 	rounds        int
+	player        string
 }
 
 const (
@@ -49,6 +50,7 @@ func (g *Game) Update() error {
 			g.difficulty = 3
 		}
 	case StateLoading:
+		g.player = "human"
 		if g.countdown > 0 {
 			elapsed := time.Since(g.countdownTime)
 			if elapsed >= time.Second {
@@ -59,32 +61,39 @@ func (g *Game) Update() error {
 			gameState = StatePlaying
 		}
 	case StatePlaying:
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP1) {
-			g.placeSymbol(0, 320)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP2) {
-			g.placeSymbol(160, 320)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP3) {
-			g.placeSymbol(320, 320)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP4) {
-			g.placeSymbol(0, 160)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP5) {
-			g.placeSymbol(160, 160)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP6) {
-			g.placeSymbol(320, 160)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP7) {
-			g.placeSymbol(0, 0)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP8) {
-			g.placeSymbol(160, 0)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyKP9) {
-			g.placeSymbol(320, 0)
+		if g.player == "ai" {
+			if g.difficulty == 1 {
+				g.EasyCpu()
+				g.player = "human"
+			}
+		} else {
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP1) {
+				g.placeSymbol(0, 320)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP2) {
+				g.placeSymbol(160, 320)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP3) {
+				g.placeSymbol(320, 320)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP4) {
+				g.placeSymbol(0, 160)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP5) {
+				g.placeSymbol(160, 160)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP6) {
+				g.placeSymbol(320, 160)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP7) {
+				g.placeSymbol(0, 0)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP8) {
+				g.placeSymbol(160, 0)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyKP9) {
+				g.placeSymbol(320, 0)
+			}
 		}
 		g.CheckWin()
 		if g.win != "" {
@@ -99,11 +108,11 @@ func (g *Game) Update() error {
 			gameState = StateGameOver
 		}
 	case StateGameOver:
-		g.board = [3][3]string{}
-		g.rounds = 0
-		g.win = ""
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			g.Init()
+			g.board = [3][3]string{}
+			g.rounds = 0
+			g.win = ""
 			gameState = StateMenu
 		}
 	}
