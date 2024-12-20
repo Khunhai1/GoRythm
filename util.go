@@ -36,6 +36,7 @@ func (g *Game) placeSymbol(x int, y int) {
 			g.switchPlayer()
 		}
 	}
+	g.rounds++
 }
 
 func (g *Game) switchPlayer() {

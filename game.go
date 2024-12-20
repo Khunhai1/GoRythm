@@ -17,6 +17,7 @@ type Game struct {
 	difficulty    int
 	countdownTime time.Time
 	countdown     int
+	rounds        int
 }
 
 const (
@@ -94,8 +95,12 @@ func (g *Game) Update() error {
 				g.pointsX++
 			}
 		}
+		if g.rounds == 9 && g.win == "" {
+			gameState = StateGameOver
+		}
 	case StateGameOver:
 		g.board = [3][3]string{}
+		g.rounds = 0
 		g.win = ""
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			g.Init()
