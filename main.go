@@ -14,7 +14,10 @@ const (
 
 func main() {
 	game := &Game{}
-	game.Init()
+	err := game.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 	ebiten.SetWindowSize(sWidth, sHeight)
 	ebiten.SetWindowTitle("GopherTicTacToe")
 	if err := ebiten.RunGame(game); err != nil {

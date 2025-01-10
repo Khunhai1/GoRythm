@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -19,6 +20,7 @@ type Game struct {
 	countdown     int
 	rounds        int
 	player        string
+	audioPlayer   *AudioPlayer
 }
 
 const (
@@ -59,6 +61,11 @@ func (g *Game) Update() error {
 			}
 		} else {
 			gameState = StatePlaying
+			if g.audioPlayer != nil {
+				g.audioPlayer.Play()
+			} else {
+				return fmt.Errorf("audio player is nil")
+			}
 		}
 	case StatePlaying:
 		if g.player == "ai" {
@@ -109,7 +116,10 @@ func (g *Game) Update() error {
 		}
 	case StateGameOver:
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-			g.Init()
+			err := g.Init()
+			if err != nil {
+				return err
+			}
 			g.board = [3][3]string{}
 			g.rounds = 0
 			g.win = ""

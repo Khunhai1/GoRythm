@@ -2,6 +2,7 @@ package main
 
 import (
 	"image/color"
+	"log"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -11,7 +12,7 @@ var gameImage = ebiten.NewImage(sWidth, sWidth)
 var XImage, OImage *ebiten.Image
 var boardImage *ebiten.Image
 
-func (g *Game) Init() {
+func (g *Game) Init() error {
 	boardImage = g.GenerateBoard(gameImage)
 	XImage, OImage = g.GenerateSymbols(gameImage)
 	re := newRandom().Intn(2)
@@ -22,6 +23,11 @@ func (g *Game) Init() {
 		g.playing = "X"
 		g.alter = 1
 	}
+	err := g.initAudio()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
@@ -61,4 +67,16 @@ func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Ima
 	imageX.Stroke()
 
 	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image())
+}
+
+// Init the audio player
+func (g *Game) initAudio() error {
+	ap, err := NewAudioPlayer(2)
+	if err != nil {
+		log.Printf("failed to init audio player: %v", err)
+		return err
+	} else {
+		g.audioPlayer = ap
+	}
+	return nil
 }
