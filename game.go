@@ -115,6 +115,7 @@ func (g *Game) Update() error {
 			gameState = StateGameOver
 		}
 	case StateGameOver:
+		g.audioPlayer.Stop()
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			err := g.Init()
 			if err != nil {
