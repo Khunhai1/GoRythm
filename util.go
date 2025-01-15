@@ -87,7 +87,7 @@ func (g *Game) HardCpu() (int, int) {
 
 func (g *Game) minimax(depth int, isMaximizing bool) int {
 	// Check if game is over
-	winner := g.CheckWin()
+	winner, _ := g.CheckWin()
 	if winner == "X" {
 		return 10 - depth // Maximize for AI (X)
 	}
@@ -128,27 +128,27 @@ func (g *Game) minimax(depth int, isMaximizing bool) int {
 	}
 }
 
-func (g *Game) CheckWin() string {
+func (g *Game) CheckWin() (string, [][]int) {
 	// Check rows
 	for i := 0; i < 3; i++ {
 		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != "" {
-			return g.board[i][0]
+			return g.board[i][0], [][]int{{0, i}, {1, i}, {2, i}}
 		}
 	}
 	// Check columns
 	for i := 0; i < 3; i++ {
 		if g.board[0][i] == g.board[1][i] && g.board[1][i] == g.board[2][i] && g.board[0][i] != "" {
-			return g.board[0][i]
+			return g.board[0][i], [][]int{{i, 0}, {i, 1}, {i, 2}}
 		}
 	}
 	// Check diagonals
 	if g.board[0][0] == g.board[1][1] && g.board[1][1] == g.board[2][2] && g.board[0][0] != "" {
-		return g.board[0][0]
+		return g.board[0][0], [][]int{{0, 0}, {1, 1}, {2, 2}}
 	}
 	if g.board[0][2] == g.board[1][1] && g.board[1][1] == g.board[2][0] && g.board[0][2] != "" {
-		return g.board[0][2]
+		return g.board[0][2], [][]int{{0, 2}, {1, 1}, {2, 0}}
 	}
-	return ""
+	return "", nil
 }
 
 func (g *Game) IsBoardFull() bool {

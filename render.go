@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 
+	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -82,18 +83,30 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
-	gameImage.Clear()
-	boardImage.Clear()
-	msgGameOver := "Game Over"
-	text.Draw(screen, msgGameOver, bigText, 70, 200, color.White)
+	g.DrawGame(screen)
+	if g.win != "" {
+		_, winningLine := g.CheckWin()
+		if winningLine != nil {
+			dc := gg.NewContext(sWidth, sWidth)
+			dc.SetColor(color.RGBA{R: 255, G: 0, B: 0, A: 255}) // Red color for the winning line
+			dc.SetLineWidth(10)
+			startX := float64(winningLine[0][1]*160 + 80)
+			startY := float64(winningLine[0][0]*160 + 80)
+			endX := float64(winningLine[2][1]*160 + 80)
+			endY := float64(winningLine[2][0]*160 + 80)
+			dc.DrawLine(startX, startY, endX, endY)
+			dc.Stroke()
+			screen.DrawImage(ebiten.NewImageFromImage(dc.Image()), nil)
+		}
+	}
 	msgPressEnter := "Press ENTER to play again"
-	text.Draw(screen, msgPressEnter, normalText, 70, 300, color.White)
+	text.Draw(screen, msgPressEnter, normalText, (sWidth-150)/2, sHeight-30, color.White)
 	if g.win != "" {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
-		text.Draw(screen, msgWin, bigText, 70, 100, color.RGBA{G: 50, B: 200, A: 255})
+		text.Draw(screen, msgWin, bigText, (sWidth-150)/2, sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
 	} else {
 		msgDraw := "It's a draw!"
-		text.Draw(screen, msgDraw, bigText, 70, 100, color.RGBA{G: 50, B: 200, A: 255})
+		text.Draw(screen, msgDraw, bigText, (sWidth-150)/2, sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
 	}
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
 	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)

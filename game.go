@@ -98,7 +98,7 @@ func (g *Game) Update() error {
 				}
 			}
 		}
-		g.win = g.CheckWin()
+		g.win, _ = g.CheckWin()
 		if g.win != "" {
 			gameState = StateGameOver
 			if g.win == "O" {
@@ -113,6 +113,8 @@ func (g *Game) Update() error {
 	case StateGameOver:
 		g.audioPlayer.Stop() // Arrêter la musique
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			gameImage.Clear()
+			boardImage.Clear()
 			// Réinitialiser l'état du jeu ici
 			err := g.Init()
 			if err != nil {
