@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"log"
+	"time"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,6 +14,16 @@ var XImage, OImage *ebiten.Image
 var boardImage *ebiten.Image
 
 func (g *Game) Init() error {
+	// Reset variables before starting a new game
+	g.board = [3][3]string{}     // Reset the game board
+	g.rounds = 0                 // Reset the number of rounds
+	g.win = ""                   // Reset the win status
+	g.playing = ""               // Reset the current player
+	g.difficulty = 0             // Reset the difficulty level
+	g.countdown = 3              // Reset the countdown timer
+	g.countdownTime = time.Now() // Reset the countdown start time
+
+	// Generate the game board and symbols
 	boardImage = g.GenerateBoard(gameImage)
 	XImage, OImage = g.GenerateSymbols(gameImage)
 	re := newRandom().Intn(2)
@@ -23,6 +34,8 @@ func (g *Game) Init() error {
 		g.playing = "X"
 		g.alter = 1
 	}
+
+	// Initialize audio settings
 	err := g.initAudio()
 	if err != nil {
 		return err

@@ -33,6 +33,18 @@ const (
 
 var gameState = StateMenu
 
+var numpadToBoard = map[ebiten.Key][2]int{
+	ebiten.KeyKP1: {0, 2},
+	ebiten.KeyKP2: {1, 2},
+	ebiten.KeyKP3: {2, 2},
+	ebiten.KeyKP4: {0, 1},
+	ebiten.KeyKP5: {1, 1},
+	ebiten.KeyKP6: {2, 1},
+	ebiten.KeyKP7: {0, 0},
+	ebiten.KeyKP8: {1, 0},
+	ebiten.KeyKP9: {2, 0},
+}
+
 // Handle game logic
 func (g *Game) Update() error {
 	switch gameState {
@@ -56,8 +68,8 @@ func (g *Game) Update() error {
 		if g.countdown > 0 {
 			elapsed := time.Since(g.countdownTime)
 			if elapsed >= time.Second {
-				g.countdownTime = time.Now()
 				g.countdown--
+				g.countdownTime = time.Now()
 			}
 		} else {
 			gameState = StatePlaying
@@ -69,40 +81,24 @@ func (g *Game) Update() error {
 		}
 	case StatePlaying:
 		if g.player == "ai" {
+			var x, y int
 			if g.difficulty == 1 {
-				g.EasyCpu()
-				g.player = "human"
+				x, y = g.EasyCpu()
+			} else if g.difficulty == 3 {
+				x, y = g.HardCpu()
 			}
+			g.placeSymbol(x, y)
 		} else {
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP1) {
-				g.placeSymbol(0, 320)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP2) {
-				g.placeSymbol(160, 320)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP3) {
-				g.placeSymbol(320, 320)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP4) {
-				g.placeSymbol(0, 160)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP5) {
-				g.placeSymbol(160, 160)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP6) {
-				g.placeSymbol(320, 160)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP7) {
-				g.placeSymbol(0, 0)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP8) {
-				g.placeSymbol(160, 0)
-			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyKP9) {
-				g.placeSymbol(320, 0)
+			for key, pos := range numpadToBoard {
+				if inpututil.IsKeyJustPressed(key) {
+					x, y := pos[0], pos[1]
+					if g.board[x][y] == "" {
+						g.placeSymbol(x, y)
+					}
+				}
 			}
 		}
-		g.CheckWin()
+		g.win = g.CheckWin()
 		if g.win != "" {
 			gameState = StateGameOver
 			if g.win == "O" {
@@ -111,22 +107,21 @@ func (g *Game) Update() error {
 				g.pointsX++
 			}
 		}
-		if g.rounds == 9 && g.win == "" {
+		if g.IsBoardFull() {
 			gameState = StateGameOver
 		}
 	case StateGameOver:
-		g.audioPlayer.Stop()
+		g.audioPlayer.Stop() // Arrêter la musique
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			// Réinitialiser l'état du jeu ici
 			err := g.Init()
 			if err != nil {
 				return err
 			}
-			g.board = [3][3]string{}
-			g.rounds = 0
-			g.win = ""
-			gameState = StateMenu
+			gameState = StateMenu // Retour au menu
 		}
 	}
+
 	return nil
 }
 

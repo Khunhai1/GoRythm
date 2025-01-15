@@ -70,6 +70,10 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	screen.DrawImage(gameImage, nil)
 	// mx, my := ebiten.CursorPosition()
 
+	// Draw rounds
+	msgRounds := fmt.Sprintf("Round: %v", g.rounds)
+	text.Draw(screen, msgRounds, normalText, 10, sHeight-30, color.White)
+
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
 	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)
 
