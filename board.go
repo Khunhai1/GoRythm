@@ -19,7 +19,7 @@ func (g *Game) Init() error {
 	g.rounds = 0                 // Reset the number of rounds
 	g.win = ""                   // Reset the win status
 	g.playing = ""               // Reset the current player
-	g.difficulty = 0             // Reset the difficulty level
+	g.gameMode = 0               // Reset the game mode
 	g.countdown = 3              // Reset the countdown timer
 	g.countdownTime = time.Now() // Reset the countdown start time
 

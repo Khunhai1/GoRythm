@@ -38,7 +38,7 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	colorMedium := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	colorHard := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 
-	switch g.difficulty {
+	switch g.gameMode {
 	case 1:
 		colorEasy = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red
 	case 2:
@@ -48,8 +48,8 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	}
 
 	text.Draw(screen, "1. Easy", normalText, 70, 250, colorEasy)
-	text.Draw(screen, "2. Medium", normalText, 70, 300, colorMedium)
-	text.Draw(screen, "3. Hard", normalText, 70, 350, colorHard)
+	text.Draw(screen, "2. Hard", normalText, 70, 300, colorMedium)
+	text.Draw(screen, "3. GoRythm", normalText, 70, 350, colorHard)
 
 	msgStart := "Press ENTER to start"
 	text.Draw(screen, msgStart, normalText, sWidth/2, sHeight/2, color.White)

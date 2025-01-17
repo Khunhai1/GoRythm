@@ -15,12 +15,13 @@ type Game struct {
 	pointsX       int
 	win           string
 	alter         int
-	difficulty    int
+	gameMode      int
 	countdownTime time.Time
 	countdown     int
 	rounds        int
 	player        string
 	audioPlayer   *AudioPlayer
+	goRythm       *GoRythm // GoRythm mode game struct
 }
 
 const (
@@ -55,13 +56,14 @@ func (g *Game) Update() error {
 			g.countdown = 3
 		}
 		if inpututil.IsKeyJustPressed(ebiten.Key1) {
-			g.difficulty = 1
+			g.gameMode = 1
 		}
 		if inpututil.IsKeyJustPressed(ebiten.Key2) {
-			g.difficulty = 2
+			g.gameMode = 2
 		}
 		if inpututil.IsKeyJustPressed(ebiten.Key3) {
-			g.difficulty = 3
+			g.gameMode = 3
+			g.goRythm = NewGoRythmGame()
 		}
 	case StateLoading:
 		g.player = "human"
@@ -80,19 +82,29 @@ func (g *Game) Update() error {
 			}
 		}
 	case StatePlaying:
-		if g.player == "ai" {
-			var x, y int
-			if g.difficulty == 1 {
-				x, y = g.EasyCpu()
-			} else if g.difficulty == 3 {
-				x, y = g.HardCpu()
-			}
+		switch {
+		// Human vs easy AI
+		case g.player == "ai" && g.gameMode == 1:
+			x, y := g.EasyCpu()
 			g.placeSymbol(x, y)
-		} else {
+		// Human vs hard AI
+		case g.player == "ai" && g.gameMode == 2:
+			x, y := g.HardCpu()
+			g.placeSymbol(x, y)
+		// Human vs human
+		case g.player == "human":
 			for key, pos := range numpadToBoard {
 				if inpututil.IsKeyJustPressed(key) {
 					x, y := pos[0], pos[1]
 					if g.board[x][y] == "" {
+						// GoRythm mode
+						if g.gameMode == 3 {
+							remove, toRemove := g.goRythm.Update(g.playing, x, y)
+							if remove {
+								g.board[toRemove[0]][toRemove[1]] = ""
+								// TODO : Remove graphic symbol
+							}
+						}
 						g.placeSymbol(x, y)
 					}
 				}
