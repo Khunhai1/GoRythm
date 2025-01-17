@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 )
 
 const (
@@ -12,7 +13,11 @@ const (
 	sHeight = 600
 )
 
+var audioContext *audio.Context
+
 func main() {
+	audioContext = audio.NewContext(44100) // Initialize the audio context once
+
 	game := &Game{}
 	err := game.Init()
 	if err != nil {

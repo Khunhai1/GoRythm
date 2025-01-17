@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"math/rand"
 	"time"
 
@@ -20,65 +21,34 @@ func (g *Game) ResetPoints() {
 func (g *Game) placeSymbol(x int, y int) {
 	switch g.playing {
 	case "O":
-		if g.board[x/160][y/160] == "" {
-			g.board[x/160][y/160] = "O"
-			opSymbol := &ebiten.DrawImageOptions{}
-			opSymbol.GeoM.Translate(float64(x), float64(y))
-			gameImage.DrawImage(OImage, opSymbol)
-			g.switchPlayer()
-			g.player = "ai"
-		}
+		g.board[x][y] = "O"
+		opSymbol := &ebiten.DrawImageOptions{}
+		opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(OImage, opSymbol)
 	case "X":
-		if g.board[x/160][y/160] == "" {
-			g.board[x/160][y/160] = "X"
-			opSymbol := &ebiten.DrawImageOptions{}
-			opSymbol.GeoM.Translate(float64(x), float64(y))
-			gameImage.DrawImage(XImage, opSymbol)
-			g.switchPlayer()
-			g.player = "ai"
-		}
+		g.board[x][y] = "X"
+		opSymbol := &ebiten.DrawImageOptions{}
+		opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(XImage, opSymbol)
 	}
+	g.switchPlayer()
 	g.rounds++
 }
 
 func (g *Game) switchPlayer() {
-	if g.playing == "O" {
-		g.playing = "X"
-		g.alter = 1
-	} else {
+	if g.playing == "X" {
 		g.playing = "O"
-		g.alter = 0
+	} else {
+		g.playing = "X"
+	}
+	if g.player == "human" {
+		g.player = "ai"
+	} else {
+		g.player = "human"
 	}
 }
 
-// Check if the game is over
-func (g *Game) CheckWin() {
-	// Check rows
-	for i := 0; i < 3; i++ {
-		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != "" {
-			g.win = g.board[i][0]
-			return
-		}
-	}
-	// Check columns
-	for i := 0; i < 3; i++ {
-		if g.board[0][i] == g.board[1][i] && g.board[1][i] == g.board[2][i] && g.board[0][i] != "" {
-			g.win = g.board[0][i]
-			return
-		}
-	}
-	// Check diagonals
-	if g.board[0][0] == g.board[1][1] && g.board[1][1] == g.board[2][2] && g.board[0][0] != "" {
-		g.win = g.board[0][0]
-		return
-	}
-	if g.board[0][2] == g.board[1][1] && g.board[1][1] == g.board[2][0] && g.board[0][2] != "" {
-		g.win = g.board[0][2]
-		return
-	}
-}
-
-func (g *Game) EasyCpu() {
+func (g *Game) EasyCpu() (int, int) {
 	r := newRandom()
 	var x, y int
 	for {
@@ -88,13 +58,106 @@ func (g *Game) EasyCpu() {
 			break
 		}
 	}
-	g.board[x][y] = g.playing
-	opSymbol := &ebiten.DrawImageOptions{}
-	opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
-	if g.playing == "O" {
-		gameImage.DrawImage(OImage, opSymbol)
-	} else {
-		gameImage.DrawImage(XImage, opSymbol)
+	return x, y
+}
+
+// HardCpu playing with minimax algorithm
+func (g *Game) HardCpu() (int, int) {
+	bestScore := math.MinInt
+	var bestMove [2]int
+	// Minimax with increased depth
+	for x := 0; x < 3; x++ {
+		for y := 0; y < 3; y++ {
+			if g.board[x][y] == "" {
+				// Simulate the move
+				g.board[x][y] = "X"
+				score := g.minimax(0, false)
+				g.board[x][y] = "" // Undo the move
+
+				// Keep track of the best move
+				if score > bestScore {
+					bestScore = score
+					bestMove = [2]int{x, y}
+				}
+			}
+		}
 	}
-	g.switchPlayer()
+	return bestMove[0], bestMove[1]
+}
+
+func (g *Game) minimax(depth int, isMaximizing bool) int {
+	// Check if game is over
+	winner, _ := g.CheckWin()
+	if winner == "X" {
+		return 10 - depth // Maximize for AI (X)
+	}
+	if winner == "O" {
+		return depth - 10 // Minimize for Player (O)
+	}
+	if g.IsBoardFull() {
+		return 0 // Draw
+	}
+
+	// Maximizing Player (AI)
+	if isMaximizing {
+		bestScore := math.MinInt
+		for x := 0; x < 3; x++ {
+			for y := 0; y < 3; y++ {
+				if g.board[x][y] == "" {
+					g.board[x][y] = "X" // AI's move
+					score := g.minimax(depth+1, false)
+					g.board[x][y] = "" // Undo the move
+					bestScore = max(bestScore, score)
+				}
+			}
+		}
+		return bestScore
+	} else { // Minimizing Player (Human)
+		bestScore := math.MaxInt
+		for x := 0; x < 3; x++ {
+			for y := 0; y < 3; y++ {
+				if g.board[x][y] == "" {
+					g.board[x][y] = "O" // Human's move
+					score := g.minimax(depth+1, true)
+					g.board[x][y] = "" // Undo the move
+					bestScore = min(bestScore, score)
+				}
+			}
+		}
+		return bestScore
+	}
+}
+
+func (g *Game) CheckWin() (string, [][]int) {
+	// Check rows
+	for i := 0; i < 3; i++ {
+		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != "" {
+			return g.board[i][0], [][]int{{0, i}, {1, i}, {2, i}}
+		}
+	}
+	// Check columns
+	for i := 0; i < 3; i++ {
+		if g.board[0][i] == g.board[1][i] && g.board[1][i] == g.board[2][i] && g.board[0][i] != "" {
+			return g.board[0][i], [][]int{{i, 0}, {i, 1}, {i, 2}}
+		}
+	}
+	// Check diagonals
+	if g.board[0][0] == g.board[1][1] && g.board[1][1] == g.board[2][2] && g.board[0][0] != "" {
+		return g.board[0][0], [][]int{{0, 0}, {1, 1}, {2, 2}}
+	}
+	if g.board[0][2] == g.board[1][1] && g.board[1][1] == g.board[2][0] && g.board[0][2] != "" {
+		return g.board[0][2], [][]int{{0, 2}, {1, 1}, {2, 0}}
+	}
+	return "", nil
+}
+
+func (g *Game) IsBoardFull() bool {
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			if g.board[i][j] == "" {
+				return false
+			}
+		}
+	}
+	return true
 }

@@ -21,10 +21,7 @@ type AudioPlayer struct {
 	player  *audio.Player
 }
 
-func NewAudioPlayer() (*AudioPlayer, error) {
-	// Create audio context
-	context := audio.NewContext(sampleRate)
-
+func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 	// Decode MP3 file
 	stream, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(mp3Data))
 	if err != nil {
@@ -32,14 +29,14 @@ func NewAudioPlayer() (*AudioPlayer, error) {
 	}
 
 	// Create audio player
-	player, err := context.NewPlayer(stream)
+	player, err := audioContext.NewPlayer(stream)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create audio player: %w", err)
 	}
 
 	// Create AudioPlayer instance
 	ap := &AudioPlayer{
-		context: context,
+		context: audioContext,
 		player:  player,
 	}
 
