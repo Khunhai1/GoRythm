@@ -9,9 +9,18 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var gameImage = ebiten.NewImage(sWidth, sWidth)
-var XImage, OImage *ebiten.Image
-var boardImage *ebiten.Image
+const (
+	cellSize          = 160
+	gridLineThickness = 2
+	effectiveCellSize = cellSize - gridLineThickness/2
+	symbolThickness   = 15
+	xLinesWidth       = 20
+	symbolSpacing     = 20
+)
+
+var (
+	gameImage, boardImage, XImage, OImage, EmptyImage *ebiten.Image
+)
 
 func (g *Game) Init() error {
 	// Reset variables before starting a new game
@@ -24,8 +33,9 @@ func (g *Game) Init() error {
 	g.countdownTime = time.Now() // Reset the countdown start time
 
 	// Generate the game board and symbols
+	gameImage = ebiten.NewImage(sWidth, sWidth)
 	boardImage = g.GenerateBoard(gameImage)
-	XImage, OImage = g.GenerateSymbols(gameImage)
+	XImage, OImage, EmptyImage = g.GenerateSymbols(gameImage)
 	re := newRandom().Intn(2)
 	if re == 0 {
 		g.playing = "O"
@@ -44,7 +54,6 @@ func (g *Game) Init() error {
 }
 
 func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
-	const gridSize = 160
 	dc := gg.NewContext(sWidth, sWidth)
 	dc.SetColor(color.Black)
 	dc.Clear()
@@ -52,34 +61,38 @@ func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
 	// Draw grid lines
 	dc.SetColor(color.White)
 	for i := 1; i <= 2; i++ {
-		dc.DrawLine(float64(i*gridSize), 0, float64(i*gridSize), sWidth)
-		dc.DrawLine(0, float64(i*gridSize), sWidth, float64(i*gridSize))
+		gridLinePosition := i*cellSize - gridLineThickness/2
+		dc.DrawLine(float64(gridLinePosition), 0, float64(gridLinePosition), sWidth)
+		dc.DrawLine(0, float64(gridLinePosition), sWidth, float64(gridLinePosition))
 	}
-	dc.SetLineWidth(5)
+	dc.SetLineWidth(gridLineThickness)
 	dc.Stroke()
 
 	return ebiten.NewImageFromImage(dc.Image())
 }
 
-func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image) {
-	const gridSize = 160
-	dc := gg.NewContext(gridSize, gridSize)
+func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebiten.Image) {
+	dc := gg.NewContext(effectiveCellSize, effectiveCellSize)
 	dc.Clear()
 
-	imageO := gg.NewContext(gridSize, gridSize)
+	imageO := gg.NewContext(effectiveCellSize, effectiveCellSize)
 	imageO.SetColor(color.White)
-	imageO.DrawCircle(gridSize/2, gridSize/2, gridSize/2-10)
-	imageO.SetLineWidth(15)
+	imageO.DrawCircle(effectiveCellSize/2, effectiveCellSize/2, effectiveCellSize/2-symbolSpacing)
+	imageO.SetLineWidth(symbolThickness)
 	imageO.Stroke()
 
-	imageX := gg.NewContext(gridSize, gridSize)
+	imageX := gg.NewContext(effectiveCellSize, effectiveCellSize)
 	imageX.SetColor(color.White)
-	imageX.SetLineWidth(15)
-	imageX.DrawLine(20, 20, gridSize-20, gridSize-20)
-	imageX.DrawLine(20, gridSize-20, gridSize-20, 20)
+	imageX.SetLineWidth(symbolThickness)
+	imageX.DrawLine(xLinesWidth, xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing)
+	imageX.DrawLine(xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing, xLinesWidth)
 	imageX.Stroke()
 
-	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image())
+	imageEmpty := gg.NewContext(effectiveCellSize-3, effectiveCellSize-3)
+	imageEmpty.SetColor(color.Black)
+	imageEmpty.Clear()
+
+	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image()), ebiten.NewImageFromImage(imageEmpty.Image())
 }
 
 // Init the audio player

@@ -34,6 +34,9 @@ func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 		return nil, fmt.Errorf("failed to create audio player: %w", err)
 	}
 
+	// Set volume
+	player.SetVolume(0.05)
+
 	// Create AudioPlayer instance
 	ap := &AudioPlayer{
 		context: audioContext,

@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libxi-dev \
     libxinerama-dev \
     libxxf86vm-dev \
+    libasound2-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install golangci-lint

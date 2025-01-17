@@ -101,8 +101,7 @@ func (g *Game) Update() error {
 						if g.gameMode == 3 {
 							remove, toRemove := g.goRythm.Update(g.playing, x, y)
 							if remove {
-								g.board[toRemove[0]][toRemove[1]] = ""
-								// TODO : Remove graphic symbol
+								g.removeSymbol(toRemove[0], toRemove[1])
 							}
 						}
 						g.placeSymbol(x, y)

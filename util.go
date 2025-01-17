@@ -22,17 +22,24 @@ func (g *Game) placeSymbol(x int, y int) {
 	switch g.playing {
 	case "O":
 		g.board[x][y] = "O"
-		opSymbol := &ebiten.DrawImageOptions{}
-		opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
-		gameImage.DrawImage(OImage, opSymbol)
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(OImage, options)
 	case "X":
 		g.board[x][y] = "X"
-		opSymbol := &ebiten.DrawImageOptions{}
-		opSymbol.GeoM.Translate(float64(x*160), float64(y*160))
-		gameImage.DrawImage(XImage, opSymbol)
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x*160), float64(y*160))
+		gameImage.DrawImage(XImage, options)
 	}
 	g.switchPlayer()
 	g.rounds++
+}
+
+func (g *Game) removeSymbol(x, y int) {
+	g.board[x][y] = ""
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+	gameImage.DrawImage(EmptyImage, options)
 }
 
 func (g *Game) switchPlayer() {
@@ -41,11 +48,11 @@ func (g *Game) switchPlayer() {
 	} else {
 		g.playing = "X"
 	}
-	if g.player == "human" {
-		g.player = "ai"
-	} else {
-		g.player = "human"
-	}
+	// if g.player == "human" {
+	// 	g.player = "ai"
+	// } else {
+	// 	g.player = "human"
+	// }
 }
 
 func (g *Game) EasyCpu() (int, int) {
