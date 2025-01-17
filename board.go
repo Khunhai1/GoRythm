@@ -71,7 +71,7 @@ func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Ima
 
 // Init the audio player
 func (g *Game) initAudio() error {
-	ap, err := NewAudioPlayer(2)
+	ap, err := NewAudioPlayer()
 	if err != nil {
 		log.Printf("failed to init audio player: %v", err)
 		return err

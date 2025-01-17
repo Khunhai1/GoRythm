@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
-	"os"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
@@ -13,20 +13,17 @@ const (
 	sampleRate = 44100
 )
 
+//go:embed audio/1.mp3
+var mp3Data []byte
+
 type AudioPlayer struct {
 	context *audio.Context
 	player  *audio.Player
 }
 
-func NewAudioPlayer(music int) (*AudioPlayer, error) {
+func NewAudioPlayer() (*AudioPlayer, error) {
 	// Create audio context
 	context := audio.NewContext(sampleRate)
-
-	// Load MP3 file from "music" parameter
-	mp3Data, err := os.ReadFile(fmt.Sprintf("audio/%d.mp3", music))
-	if err != nil {
-		return nil, fmt.Errorf("failed to read audio file: %w", err)
-	}
 
 	// Decode MP3 file
 	stream, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(mp3Data))
