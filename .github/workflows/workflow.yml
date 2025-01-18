@@ -2,9 +2,9 @@ name: Static check, build, test and deploy
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: ["master", "develop"]
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -31,7 +31,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install pre-commit
         run: |
@@ -57,7 +57,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23.x'
+          go-version: "1.23.x"
 
       - name: Install dependencies
         run: |
@@ -73,18 +73,18 @@ jobs:
             libasound2-dev \
 
       - name: Install Go dependencies
-        run: go get .
+        run: go get ./cmd/main
 
       - name: Build
-        run: go build -v ./...
+        run: go build -v ./cmd/main
 
       - name: Test with the Go CLI
-        run: go test
+        run: go test -v ./cmd/main
 
         # Upload the WASM build for github pages
       - name: Build for WASM
         run: |
-          GOOS=js GOARCH=wasm go build -o public/main.wasm ./...
+          GOOS=js GOARCH=wasm go build -o public/main.wasm ./cmd/main
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -97,8 +97,8 @@ jobs:
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
 
     # Deploy to the github-pages environment
     environment:
