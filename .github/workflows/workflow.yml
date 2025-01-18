@@ -25,7 +25,8 @@ jobs:
             libxrandr-dev \
             libxi-dev \
             libxinerama-dev \
-            libxxf86vm-dev
+            libxxf86vm-dev \
+            libasound2-dev \
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -68,7 +69,8 @@ jobs:
             libxrandr-dev \
             libxi-dev \
             libxinerama-dev \
-            libxxf86vm-dev
+            libxxf86vm-dev \
+            libasound2-dev \
 
       - name: Install Go dependencies
         run: go get .
