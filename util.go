@@ -46,13 +46,13 @@ func (g *Game) placeSymbol(x int, y int) {
 	case "O":
 		g.board[x][y] = "O"
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*160), float64(y*160))
+		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		gameImage.DrawImage(OImage, options)
 		g.pointsO += precisionScore
 	case "X":
 		g.board[x][y] = "X"
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*160), float64(y*160))
+		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		gameImage.DrawImage(XImage, options)
 		g.pointsX += precisionScore
 	}
@@ -65,6 +65,19 @@ func (g *Game) removeSymbol(x, y int) {
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 	gameImage.DrawImage(EmptyImage, options)
+}
+
+func (g *Game) highlightSymbol(x, y int) {
+	switch g.playing {
+	case "O":
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		gameImage.DrawImage(OImageHighlighted, options)
+	case "X":
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		gameImage.DrawImage(XImageHighlighted, options)
+	}
 }
 
 func (g *Game) switchPlayer() {

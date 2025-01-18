@@ -18,7 +18,8 @@ const (
 )
 
 var (
-	gameImage, boardImage, XImage, OImage, EmptyImage *ebiten.Image
+	gameImage, boardImage, XImage, OImage, XImageHighlighted, OImageHighlighted, EmptyImage *ebiten.Image
+	greyColor                                                                               = color.RGBA{82, 82, 82, 255}
 )
 
 func (g *Game) Init() error {
@@ -35,7 +36,7 @@ func (g *Game) Init() error {
 	// Generate the game board and symbols
 	gameImage = ebiten.NewImage(sWidth, sWidth)
 	boardImage = g.GenerateBoard(gameImage)
-	XImage, OImage, EmptyImage = g.GenerateSymbols(gameImage)
+	XImage, OImage, XImageHighlighted, OImageHighlighted, EmptyImage = g.GenerateSymbols(gameImage)
 	re := newRandom().Intn(2)
 	if re == 0 {
 		g.playing = "O"
@@ -72,7 +73,7 @@ func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
 	return ebiten.NewImageFromImage(dc.Image())
 }
 
-func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebiten.Image) {
+func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebiten.Image, *ebiten.Image, *ebiten.Image) {
 	dc := gg.NewContext(effectiveCellSize, effectiveCellSize)
 	dc.Clear()
 
@@ -89,11 +90,24 @@ func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Ima
 	imageX.DrawLine(xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing, xLinesWidth)
 	imageX.Stroke()
 
+	imageOHighlighted := gg.NewContext(effectiveCellSize, effectiveCellSize)
+	imageOHighlighted.SetColor(greyColor)
+	imageOHighlighted.DrawCircle(effectiveCellSize/2, effectiveCellSize/2, effectiveCellSize/2-symbolSpacing)
+	imageOHighlighted.SetLineWidth(symbolThickness)
+	imageOHighlighted.Stroke()
+
+	imageXHighlighted := gg.NewContext(effectiveCellSize, effectiveCellSize)
+	imageXHighlighted.SetColor(greyColor)
+	imageXHighlighted.SetLineWidth(symbolThickness)
+	imageXHighlighted.DrawLine(xLinesWidth, xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing)
+	imageXHighlighted.DrawLine(xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing, xLinesWidth)
+	imageXHighlighted.Stroke()
+
 	imageEmpty := gg.NewContext(effectiveCellSize-3, effectiveCellSize-3)
 	imageEmpty.SetColor(color.Black)
 	imageEmpty.Clear()
 
-	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image()), ebiten.NewImageFromImage(imageEmpty.Image())
+	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image()), ebiten.NewImageFromImage(imageXHighlighted.Image()), ebiten.NewImageFromImage(imageOHighlighted.Image()), ebiten.NewImageFromImage(imageEmpty.Image())
 }
 
 // Init the audio player

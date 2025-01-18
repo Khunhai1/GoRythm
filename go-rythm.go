@@ -4,8 +4,8 @@ var (
 	noMove = [2]int{-1, -1}
 )
 
-// Rotative tic tac toe game
-// (first move is removed from the board when the third move is made by the same player)
+// A maximum of three symbols per player can be placed on the board. When the third symbol is placed, the first symbol is removed.
+// The next symbol to be removed in the next round is highlighted.
 type GoRythm struct {
 	movesO       chan [2]int // The last two moves made by player O
 	movesX       chan [2]int // The last two moves made by player X
@@ -22,7 +22,10 @@ func NewGoRythmGame() *GoRythm {
 	}
 }
 
-func (g *GoRythm) Update(playing string, x, y int) (remove bool, toRemove [2]int) {
+// Update the game state and return the coordinates where a symbol should be removed or highlighted.
+// A maximum of three symbols per player can be placed on the board. When the third symbol is placed, the first symbol is removed.
+// The next symbol to be removed in the next round is highlighted.
+func (g *GoRythm) Update(playing string, x, y int) (remove, highlight bool, toRemove, toHighlight [2]int) {
 	// Check if there is a move to remove
 	remove, toRemove = g.moveToRemove(playing)
 
@@ -41,7 +44,10 @@ func (g *GoRythm) Update(playing string, x, y int) (remove bool, toRemove [2]int
 		panic("Invalid player")
 	}
 
-	return remove, toRemove
+	// Check if there is a move to highlight
+	highlight, toHighlight = g.moveToHighlight(playing)
+
+	return remove, highlight, toRemove, toHighlight
 }
 
 func (g *GoRythm) moveToRemove(playing string) (remove bool, toRemove [2]int) {
@@ -52,6 +58,21 @@ func (g *GoRythm) moveToRemove(playing string) (remove bool, toRemove [2]int) {
 		return false, noMove
 	} else if playing == "O" {
 		if g.toBeRemovedO != noMove {
+			return true, g.toBeRemovedO
+		}
+		return false, noMove
+	}
+	panic("Invalid player")
+}
+
+func (g *GoRythm) moveToHighlight(playing string) (highlight bool, toHighlight [2]int) {
+	if playing == "X" {
+		if len(g.movesX) == 2 && g.toBeRemovedX != noMove {
+			return true, g.toBeRemovedX
+		}
+		return false, noMove
+	} else if playing == "O" {
+		if len(g.movesO) == 2 && g.toBeRemovedO != noMove {
 			return true, g.toBeRemovedO
 		}
 		return false, noMove
