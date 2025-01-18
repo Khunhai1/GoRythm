@@ -212,11 +212,11 @@ func (g *Game) IsBoardFull() bool {
 // Func to calculate precision of timing to place symbol and the beatmap corresponding
 func (g *Game) CalculatePrecision(beatTime float64) int {
 	elapsed := time.Since(g.startTime).Seconds()
-	if math.Abs(beatTime-elapsed) < 0.05 {
+	if math.Abs(beatTime-elapsed) < 0.1 {
 		return perfect
-	} else if math.Abs(beatTime-elapsed) < 0.1 {
+	} else if math.Abs(beatTime-elapsed) < 0.25 {
 		return good
-	} else if math.Abs(beatTime-elapsed) < 0.3 {
+	} else if math.Abs(beatTime-elapsed) < 0.4 {
 		return ok
 	} else {
 		return missed
