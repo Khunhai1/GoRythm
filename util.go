@@ -86,11 +86,13 @@ func (g *Game) switchPlayer() {
 	} else {
 		g.playing = "X"
 	}
-	// if g.player == "human" {
-	// 	g.player = "ai"
-	// } else {
-	// 	g.player = "human"
-	// }
+	if g.gameMode != 3 {
+		if g.player == "human" {
+			g.player = "ai"
+		} else {
+			g.player = "human"
+		}
+	}
 }
 
 func (g *Game) EasyCpu() (int, int) {
