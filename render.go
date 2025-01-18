@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"image/color"
+	"time"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
@@ -70,6 +72,27 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	screen.DrawImage(boardImage, nil)
 	screen.DrawImage(gameImage, nil)
 	// mx, my := ebiten.CursorPosition()
+
+	// Calculate the elapsed time
+	elapsed := time.Since(g.startTime).Seconds()
+
+	if gameState != StateGameOver {
+		if g.gameMode == 3 {
+			for _, beat := range modifiedBeatmap {
+				if elapsed >= beat.Time && elapsed < beat.Time+0.1 { // Allow a small margin for matching
+					g.circleColorChangeTime = time.Now()
+					break
+				}
+			}
+		}
+
+		// Draw the circle
+		circleColor := color.RGBA{0, 0, 255, 255} // Blue color
+		if time.Since(g.circleColorChangeTime).Seconds() < 0.5 {
+			circleColor = color.RGBA{255, 0, 0, 255} // Red color
+		}
+		ebitenutil.DrawCircle(screen, float64(sWidth)/2, sHeight-100, 50, circleColor)
+	}
 
 	// Draw rounds
 	msgRounds := fmt.Sprintf("Round: %v", g.rounds)

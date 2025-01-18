@@ -3,7 +3,6 @@ package main
 import (
 	"image/color"
 	"log"
-	"time"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -24,13 +23,14 @@ var (
 
 func (g *Game) Init() error {
 	// Reset variables before starting a new game
-	g.board = [3][3]string{}     // Reset the game board
-	g.rounds = 0                 // Reset the number of rounds
-	g.win = ""                   // Reset the win status
-	g.playing = ""               // Reset the current player
-	g.gameMode = 0               // Reset the game mode
-	g.countdown = 3              // Reset the countdown timer
-	g.countdownTime = time.Now() // Reset the countdown start time
+	g.board = [3][3]string{} // Reset the game board
+	g.rounds = 0             // Reset the number of rounds
+	g.win = ""               // Reset the win status
+	g.playing = ""           // Reset the current player
+	g.gameMode = 0           // Reset the game mode
+	g.countdown = 3          // Reset the countdown timer
+	g.pointsO = 0            // Reset the points for O
+	g.pointsX = 0            // Reset the points for X
 
 	// Generate the game board and symbols
 	gameImage = ebiten.NewImage(sWidth, sWidth)
@@ -50,6 +50,7 @@ func (g *Game) Init() error {
 	if err != nil {
 		return err
 	}
+	loadBeatmap()
 	return nil
 }
 

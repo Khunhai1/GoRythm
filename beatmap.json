@@ -1,0 +1,786 @@
+[
+    {
+        "time": 0.39,
+        "beatNum": 1
+    },
+    {
+        "time": 0.93,
+        "beatNum": 2
+    },
+    {
+        "time": 1.46,
+        "beatNum": 3
+    },
+    {
+        "time": 2.0,
+        "beatNum": 4
+    },
+    {
+        "time": 2.53,
+        "beatNum": 1
+    },
+    {
+        "time": 3.07,
+        "beatNum": 2
+    },
+    {
+        "time": 3.6,
+        "beatNum": 3
+    },
+    {
+        "time": 4.14,
+        "beatNum": 4
+    },
+    {
+        "time": 4.68,
+        "beatNum": 1
+    },
+    {
+        "time": 5.21,
+        "beatNum": 2
+    },
+    {
+        "time": 5.74,
+        "beatNum": 3
+    },
+    {
+        "time": 6.26,
+        "beatNum": 4
+    },
+    {
+        "time": 6.82,
+        "beatNum": 1
+    },
+    {
+        "time": 7.36,
+        "beatNum": 2
+    },
+    {
+        "time": 7.89,
+        "beatNum": 3
+    },
+    {
+        "time": 8.43,
+        "beatNum": 4
+    },
+    {
+        "time": 8.96,
+        "beatNum": 1
+    },
+    {
+        "time": 9.5,
+        "beatNum": 2
+    },
+    {
+        "time": 10.03,
+        "beatNum": 3
+    },
+    {
+        "time": 10.57,
+        "beatNum": 4
+    },
+    {
+        "time": 11.1,
+        "beatNum": 1
+    },
+    {
+        "time": 11.64,
+        "beatNum": 2
+    },
+    {
+        "time": 12.17,
+        "beatNum": 3
+    },
+    {
+        "time": 12.71,
+        "beatNum": 4
+    },
+    {
+        "time": 13.25,
+        "beatNum": 1
+    },
+    {
+        "time": 13.78,
+        "beatNum": 2
+    },
+    {
+        "time": 14.31,
+        "beatNum": 3
+    },
+    {
+        "time": 14.83,
+        "beatNum": 4
+    },
+    {
+        "time": 15.39,
+        "beatNum": 1
+    },
+    {
+        "time": 15.92,
+        "beatNum": 2
+    },
+    {
+        "time": 16.45,
+        "beatNum": 3
+    },
+    {
+        "time": 16.98,
+        "beatNum": 4
+    },
+    {
+        "time": 17.53,
+        "beatNum": 1
+    },
+    {
+        "time": 18.07,
+        "beatNum": 2
+    },
+    {
+        "time": 18.6,
+        "beatNum": 3
+    },
+    {
+        "time": 19.15,
+        "beatNum": 4
+    },
+    {
+        "time": 19.67,
+        "beatNum": 1
+    },
+    {
+        "time": 20.21,
+        "beatNum": 2
+    },
+    {
+        "time": 20.75,
+        "beatNum": 3
+    },
+    {
+        "time": 21.29,
+        "beatNum": 4
+    },
+    {
+        "time": 21.82,
+        "beatNum": 1
+    },
+    {
+        "time": 22.36,
+        "beatNum": 2
+    },
+    {
+        "time": 22.89,
+        "beatNum": 3
+    },
+    {
+        "time": 23.42,
+        "beatNum": 4
+    },
+    {
+        "time": 23.96,
+        "beatNum": 1
+    },
+    {
+        "time": 24.5,
+        "beatNum": 2
+    },
+    {
+        "time": 25.04,
+        "beatNum": 3
+    },
+    {
+        "time": 25.57,
+        "beatNum": 4
+    },
+    {
+        "time": 26.1,
+        "beatNum": 1
+    },
+    {
+        "time": 26.64,
+        "beatNum": 2
+    },
+    {
+        "time": 27.18,
+        "beatNum": 3
+    },
+    {
+        "time": 27.71,
+        "beatNum": 4
+    },
+    {
+        "time": 28.25,
+        "beatNum": 1
+    },
+    {
+        "time": 28.78,
+        "beatNum": 2
+    },
+    {
+        "time": 29.32,
+        "beatNum": 3
+    },
+    {
+        "time": 29.85,
+        "beatNum": 4
+    },
+    {
+        "time": 30.39,
+        "beatNum": 1
+    },
+    {
+        "time": 30.94,
+        "beatNum": 2
+    },
+    {
+        "time": 31.46,
+        "beatNum": 3
+    },
+    {
+        "time": 31.99,
+        "beatNum": 4
+    },
+    {
+        "time": 32.53,
+        "beatNum": 1
+    },
+    {
+        "time": 33.06,
+        "beatNum": 2
+    },
+    {
+        "time": 33.6,
+        "beatNum": 3
+    },
+    {
+        "time": 34.14,
+        "beatNum": 4
+    },
+    {
+        "time": 34.67,
+        "beatNum": 1
+    },
+    {
+        "time": 35.21,
+        "beatNum": 2
+    },
+    {
+        "time": 35.74,
+        "beatNum": 3
+    },
+    {
+        "time": 36.28,
+        "beatNum": 4
+    },
+    {
+        "time": 36.82,
+        "beatNum": 1
+    },
+    {
+        "time": 37.35,
+        "beatNum": 2
+    },
+    {
+        "time": 37.89,
+        "beatNum": 3
+    },
+    {
+        "time": 38.42,
+        "beatNum": 4
+    },
+    {
+        "time": 38.96,
+        "beatNum": 1
+    },
+    {
+        "time": 39.5,
+        "beatNum": 2
+    },
+    {
+        "time": 40.03,
+        "beatNum": 3
+    },
+    {
+        "time": 40.56,
+        "beatNum": 4
+    },
+    {
+        "time": 41.1,
+        "beatNum": 1
+    },
+    {
+        "time": 41.64,
+        "beatNum": 2
+    },
+    {
+        "time": 42.17,
+        "beatNum": 3
+    },
+    {
+        "time": 42.72,
+        "beatNum": 4
+    },
+    {
+        "time": 43.25,
+        "beatNum": 1
+    },
+    {
+        "time": 43.79,
+        "beatNum": 2
+    },
+    {
+        "time": 44.32,
+        "beatNum": 3
+    },
+    {
+        "time": 44.86,
+        "beatNum": 4
+    },
+    {
+        "time": 45.39,
+        "beatNum": 1
+    },
+    {
+        "time": 45.92,
+        "beatNum": 2
+    },
+    {
+        "time": 46.46,
+        "beatNum": 3
+    },
+    {
+        "time": 46.99,
+        "beatNum": 4
+    },
+    {
+        "time": 47.53,
+        "beatNum": 1
+    },
+    {
+        "time": 48.07,
+        "beatNum": 2
+    },
+    {
+        "time": 48.59,
+        "beatNum": 3
+    },
+    {
+        "time": 49.13,
+        "beatNum": 4
+    },
+    {
+        "time": 49.67,
+        "beatNum": 1
+    },
+    {
+        "time": 50.21,
+        "beatNum": 2
+    },
+    {
+        "time": 50.73,
+        "beatNum": 3
+    },
+    {
+        "time": 51.26,
+        "beatNum": 4
+    },
+    {
+        "time": 51.82,
+        "beatNum": 1
+    },
+    {
+        "time": 52.35,
+        "beatNum": 2
+    },
+    {
+        "time": 52.89,
+        "beatNum": 3
+    },
+    {
+        "time": 53.42,
+        "beatNum": 4
+    },
+    {
+        "time": 53.96,
+        "beatNum": 1
+    },
+    {
+        "time": 54.49,
+        "beatNum": 2
+    },
+    {
+        "time": 55.03,
+        "beatNum": 3
+    },
+    {
+        "time": 55.56,
+        "beatNum": 4
+    },
+    {
+        "time": 56.11,
+        "beatNum": 1
+    },
+    {
+        "time": 56.64,
+        "beatNum": 2
+    },
+    {
+        "time": 57.17,
+        "beatNum": 3
+    },
+    {
+        "time": 57.71,
+        "beatNum": 4
+    },
+    {
+        "time": 58.25,
+        "beatNum": 1
+    },
+    {
+        "time": 58.78,
+        "beatNum": 2
+    },
+    {
+        "time": 59.31,
+        "beatNum": 3
+    },
+    {
+        "time": 59.85,
+        "beatNum": 4
+    },
+    {
+        "time": 60.39,
+        "beatNum": 1
+    },
+    {
+        "time": 60.93,
+        "beatNum": 2
+    },
+    {
+        "time": 61.47,
+        "beatNum": 3
+    },
+    {
+        "time": 61.99,
+        "beatNum": 4
+    },
+    {
+        "time": 62.53,
+        "beatNum": 1
+    },
+    {
+        "time": 63.07,
+        "beatNum": 2
+    },
+    {
+        "time": 63.61,
+        "beatNum": 3
+    },
+    {
+        "time": 64.13,
+        "beatNum": 4
+    },
+    {
+        "time": 64.67,
+        "beatNum": 1
+    },
+    {
+        "time": 65.21,
+        "beatNum": 2
+    },
+    {
+        "time": 65.75,
+        "beatNum": 3
+    },
+    {
+        "time": 66.28,
+        "beatNum": 4
+    },
+    {
+        "time": 66.81,
+        "beatNum": 1
+    },
+    {
+        "time": 67.34,
+        "beatNum": 2
+    },
+    {
+        "time": 67.89,
+        "beatNum": 3
+    },
+    {
+        "time": 68.42,
+        "beatNum": 4
+    },
+    {
+        "time": 68.96,
+        "beatNum": 1
+    },
+    {
+        "time": 69.49,
+        "beatNum": 2
+    },
+    {
+        "time": 70.03,
+        "beatNum": 3
+    },
+    {
+        "time": 70.56,
+        "beatNum": 4
+    },
+    {
+        "time": 71.1,
+        "beatNum": 1
+    },
+    {
+        "time": 71.62,
+        "beatNum": 2
+    },
+    {
+        "time": 72.16,
+        "beatNum": 3
+    },
+    {
+        "time": 72.7,
+        "beatNum": 4
+    },
+    {
+        "time": 73.23,
+        "beatNum": 1
+    },
+    {
+        "time": 73.77,
+        "beatNum": 2
+    },
+    {
+        "time": 74.31,
+        "beatNum": 3
+    },
+    {
+        "time": 74.83,
+        "beatNum": 4
+    },
+    {
+        "time": 75.38,
+        "beatNum": 1
+    },
+    {
+        "time": 75.92,
+        "beatNum": 2
+    },
+    {
+        "time": 76.45,
+        "beatNum": 3
+    },
+    {
+        "time": 77.0,
+        "beatNum": 4
+    },
+    {
+        "time": 77.53,
+        "beatNum": 1
+    },
+    {
+        "time": 78.06,
+        "beatNum": 2
+    },
+    {
+        "time": 78.6,
+        "beatNum": 3
+    },
+    {
+        "time": 79.14,
+        "beatNum": 4
+    },
+    {
+        "time": 79.68,
+        "beatNum": 1
+    },
+    {
+        "time": 80.21,
+        "beatNum": 2
+    },
+    {
+        "time": 80.74,
+        "beatNum": 3
+    },
+    {
+        "time": 81.27,
+        "beatNum": 4
+    },
+    {
+        "time": 81.81,
+        "beatNum": 1
+    },
+    {
+        "time": 82.35,
+        "beatNum": 2
+    },
+    {
+        "time": 82.88,
+        "beatNum": 3
+    },
+    {
+        "time": 83.41,
+        "beatNum": 4
+    },
+    {
+        "time": 83.95,
+        "beatNum": 1
+    },
+    {
+        "time": 84.48,
+        "beatNum": 2
+    },
+    {
+        "time": 85.02,
+        "beatNum": 3
+    },
+    {
+        "time": 85.56,
+        "beatNum": 4
+    },
+    {
+        "time": 86.09,
+        "beatNum": 1
+    },
+    {
+        "time": 86.63,
+        "beatNum": 2
+    },
+    {
+        "time": 87.17,
+        "beatNum": 3
+    },
+    {
+        "time": 87.7,
+        "beatNum": 4
+    },
+    {
+        "time": 88.24,
+        "beatNum": 1
+    },
+    {
+        "time": 88.78,
+        "beatNum": 2
+    },
+    {
+        "time": 89.31,
+        "beatNum": 3
+    },
+    {
+        "time": 89.85,
+        "beatNum": 4
+    },
+    {
+        "time": 90.4,
+        "beatNum": 1
+    },
+    {
+        "time": 90.93,
+        "beatNum": 2
+    },
+    {
+        "time": 91.47,
+        "beatNum": 3
+    },
+    {
+        "time": 92.0,
+        "beatNum": 4
+    },
+    {
+        "time": 92.53,
+        "beatNum": 1
+    },
+    {
+        "time": 93.06,
+        "beatNum": 2
+    },
+    {
+        "time": 93.6,
+        "beatNum": 3
+    },
+    {
+        "time": 94.13,
+        "beatNum": 4
+    },
+    {
+        "time": 94.66,
+        "beatNum": 1
+    },
+    {
+        "time": 95.2,
+        "beatNum": 2
+    },
+    {
+        "time": 95.74,
+        "beatNum": 3
+    },
+    {
+        "time": 96.27,
+        "beatNum": 4
+    },
+    {
+        "time": 96.8,
+        "beatNum": 1
+    },
+    {
+        "time": 97.34,
+        "beatNum": 2
+    },
+    {
+        "time": 97.88,
+        "beatNum": 3
+    },
+    {
+        "time": 98.42,
+        "beatNum": 4
+    },
+    {
+        "time": 98.96,
+        "beatNum": 1
+    },
+    {
+        "time": 99.49,
+        "beatNum": 2
+    },
+    {
+        "time": 100.03,
+        "beatNum": 3
+    },
+    {
+        "time": 100.57,
+        "beatNum": 4
+    },
+    {
+        "time": 101.09,
+        "beatNum": 1
+    },
+    {
+        "time": 101.63,
+        "beatNum": 2
+    },
+    {
+        "time": 102.17,
+        "beatNum": 3
+    },
+    {
+        "time": 102.71,
+        "beatNum": 4
+    },
+    {
+        "time": 103.25,
+        "beatNum": 1
+    },
+    {
+        "time": 103.81,
+        "beatNum": 2
+    },
+    {
+        "time": 104.33,
+        "beatNum": 3
+    },
+    {
+        "time": 104.87,
+        "beatNum": 4
+    }
+]

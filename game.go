@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -22,6 +23,9 @@ type Game struct {
 	player        string
 	audioPlayer   *AudioPlayer
 	goRythm       *GoRythm // GoRythm mode game struct
+
+	startTime             time.Time
+	circleColorChangeTime time.Time
 }
 
 const (
@@ -82,6 +86,10 @@ func (g *Game) Update() error {
 			}
 		}
 	case StatePlaying:
+		if g.gameMode == 3 && g.startTime.IsZero() {
+			g.startTime = time.Now()
+			log.Println("Start time:", g.startTime)
+		}
 		switch {
 		// Human vs easy AI
 		case g.player == "ai" && g.gameMode == 1:
@@ -113,9 +121,9 @@ func (g *Game) Update() error {
 		if g.win != "" {
 			gameState = StateGameOver
 			if g.win == "O" {
-				g.pointsO++
+				g.pointsO += 250
 			} else {
-				g.pointsX++
+				g.pointsX += 250
 			}
 		}
 		if g.IsBoardFull() {

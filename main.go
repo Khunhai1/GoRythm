@@ -10,7 +10,7 @@ import (
 
 const (
 	sWidth  = 480
-	sHeight = 600
+	sHeight = 700
 )
 
 var audioContext *audio.Context
