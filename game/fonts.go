@@ -1,7 +1,7 @@
-package main
+package game
 
 import (
-	"log"
+	"GoTicTacToe/internal/log"
 
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"golang.org/x/image/font"
@@ -10,7 +10,7 @@ import (
 
 const (
 	fontSize    = 15
-	bigFontSize = 100
+	bigFontSize = 50
 	dpi         = 72
 )
 
@@ -20,7 +20,7 @@ var bigText font.Face
 func init() {
 	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
 	if err != nil {
-		log.Fatal(err)
+		log.LogMessage(log.FATAL, "Failed to parse font: "+err.Error())
 	}
 	normalText, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    fontSize,
@@ -28,7 +28,7 @@ func init() {
 		Hinting: font.HintingFull,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.LogMessage(log.FATAL, "Failed to parse font: "+err.Error())
 	}
 	bigText, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    bigFontSize,
@@ -36,6 +36,6 @@ func init() {
 		Hinting: font.HintingFull,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.LogMessage(log.FATAL, "Failed to parse font: "+err.Error())
 	}
 }
