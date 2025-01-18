@@ -1,0 +1,22 @@
+{
+  "name": "Pre-commit with Golang",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.23"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.toolsManagement.autoUpdate": true,
+        "extensions": ["golang.Go", "esbenp.prettier-vscode"]
+      },
+      "go.toolsManagement.autoUpdate": true,
+      "terminal.integrated.defaultProfile.linux": "bash"
+    }
+  }
+}
