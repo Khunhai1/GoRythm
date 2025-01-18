@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"math"
@@ -19,46 +19,25 @@ func (g *Game) ResetPoints() {
 }
 
 func (g *Game) placeSymbol(x int, y int) {
-	// Get the current elapsed time
-	elapsed := time.Since(g.startTime).Seconds()
-
-	// Find the closest beat time
-	var closestBeatTime float64
-	minDifference := math.MaxFloat64
-	for _, beat := range g.goRythm.beatMap {
-		difference := math.Abs(beat.Time - elapsed)
-		if difference < minDifference {
-			minDifference = difference
-			closestBeatTime = beat.Time
-		}
-	}
-
-	// Calculate the precision score
-	precisionScore := g.CalculateScore(closestBeatTime)
-
 	switch g.playing {
 	case "O":
 		g.board[x][y] = "O"
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
-		gameImage.DrawImage(OImage, options)
-		g.pointsO += precisionScore
+		g.gameImage.DrawImage(g.OImage, options)
 	case "X":
 		g.board[x][y] = "X"
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
-		gameImage.DrawImage(XImage, options)
-		g.pointsX += precisionScore
+		g.gameImage.DrawImage(g.XImage, options)
 	}
-	g.switchPlayer()
-	g.rounds++
 }
 
 func (g *Game) removeSymbol(x, y int) {
 	g.board[x][y] = ""
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
-	gameImage.DrawImage(EmptyImage, options)
+	g.gameImage.DrawImage(g.EmptyImage, options)
 }
 
 func (g *Game) highlightSymbol(x, y int) {
@@ -66,11 +45,11 @@ func (g *Game) highlightSymbol(x, y int) {
 	case "O":
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
-		gameImage.DrawImage(OImageHighlighted, options)
+		g.gameImage.DrawImage(g.OImageHighlighted, options)
 	case "X":
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
-		gameImage.DrawImage(XImageHighlighted, options)
+		g.gameImage.DrawImage(g.XImageHighlighted, options)
 	}
 }
 

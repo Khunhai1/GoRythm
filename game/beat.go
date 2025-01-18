@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	_ "embed"
@@ -10,10 +10,8 @@ type Beat struct {
 	BeatNum int     `json:"beatNum"`
 }
 
-var (
-	//go:embed assets/beatmap/beatmap.json
-	beatmapData []byte
-)
+//go:embed assets/beatmap/beatmap.json
+var beatmapData []byte
 
 // Load the beatmap and select only every 2nd beat
 func loadBeatmap() ([]Beat, error) {

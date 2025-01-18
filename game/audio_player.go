@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 
 const (
 	sampleRate = 44100
+	volume     = 0.05
 )
 
 //go:embed assets/audio/1.mp3
@@ -29,17 +30,14 @@ func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 	}
 
 	// Create audio player
-	player, err := audioContext.NewPlayer(stream)
+	player, err := ctx.NewPlayer(stream)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create audio player: %w", err)
 	}
 
-	// Set volume
-	player.SetVolume(0.05)
-
 	// Create AudioPlayer instance
 	ap := &AudioPlayer{
-		context: audioContext,
+		context: ctx,
 		player:  player,
 	}
 
@@ -47,9 +45,18 @@ func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 }
 
 func (ap *AudioPlayer) Play() {
+	ap.player.SetVolume(volume)
 	ap.player.Play()
 }
 
-func (ap *AudioPlayer) Stop() {
-	ap.player.Close()
+func (ap *AudioPlayer) Restart() error {
+	if err := ap.player.Rewind(); err != nil {
+		return err
+	}
+	ap.player.Pause()
+	return nil
+}
+
+func (ap *AudioPlayer) Close() error {
+	return ap.player.Close()
 }

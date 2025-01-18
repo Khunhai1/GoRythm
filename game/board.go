@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"image/color"
@@ -17,44 +17,10 @@ const (
 )
 
 var (
-	gameImage, boardImage, XImage, OImage, XImageHighlighted, OImageHighlighted, EmptyImage *ebiten.Image
-	greyColor                                                                               = color.RGBA{82, 82, 82, 255}
+	greyColor = color.RGBA{82, 82, 82, 255}
 )
 
-func (g *Game) Init() error {
-	// Reset variables before starting a new game
-	g.board = [3][3]string{} // Reset the game board
-	g.rounds = 0             // Reset the number of rounds
-	g.win = ""               // Reset the win status
-	g.playing = ""           // Reset the current player
-	g.gameMode = 0           // Reset the game mode
-	g.countdown = 3          // Reset the countdown timer
-	g.pointsO = 0            // Reset the points for O
-	g.pointsX = 0            // Reset the points for X
-
-	// Generate the game board and symbols
-	gameImage = ebiten.NewImage(sWidth, sWidth)
-	boardImage = g.GenerateBoard(gameImage)
-	XImage, OImage, XImageHighlighted, OImageHighlighted, EmptyImage = g.GenerateSymbols(gameImage)
-	re := newRandom().Intn(2)
-	if re == 0 {
-		g.playing = "O"
-		g.alter = 0
-	} else {
-		g.playing = "X"
-		g.alter = 1
-	}
-
-	// Initialize audio settings
-	err := g.initAudio()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
+func (g *Game) GenerateBoard(screen *ebiten.Image, sWidth int) *ebiten.Image {
 	dc := gg.NewContext(sWidth, sWidth)
 	dc.SetColor(color.Black)
 	dc.Clear()
@@ -63,8 +29,8 @@ func (g *Game) GenerateBoard(screen *ebiten.Image) *ebiten.Image {
 	dc.SetColor(color.White)
 	for i := 1; i <= 2; i++ {
 		gridLinePosition := i*cellSize - gridLineThickness/2
-		dc.DrawLine(float64(gridLinePosition), 0, float64(gridLinePosition), sWidth)
-		dc.DrawLine(0, float64(gridLinePosition), sWidth, float64(gridLinePosition))
+		dc.DrawLine(float64(gridLinePosition), 0, float64(gridLinePosition), float64(sWidth))
+		dc.DrawLine(0, float64(gridLinePosition), float64(sWidth), float64(gridLinePosition))
 	}
 	dc.SetLineWidth(gridLineThickness)
 	dc.Stroke()
@@ -107,18 +73,4 @@ func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Ima
 	imageEmpty.Clear()
 
 	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image()), ebiten.NewImageFromImage(imageXHighlighted.Image()), ebiten.NewImageFromImage(imageOHighlighted.Image()), ebiten.NewImageFromImage(imageEmpty.Image())
-}
-
-// Init the audio player
-func (g *Game) initAudio() error {
-	if g.audioPlayer != nil {
-		g.audioPlayer.Stop()
-	}
-	ap, err := NewAudioPlayer(audioContext) // Use the global audio context
-	if err != nil {
-		logMessage(ERROR, "failed to init audio player: "+err.Error())
-		return err
-	}
-	g.audioPlayer = ap
-	return nil
 }

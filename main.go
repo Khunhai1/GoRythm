@@ -3,6 +3,9 @@ package main
 import (
 	_ "image/png"
 
+	"GoTicTacToe/game"
+	"GoTicTacToe/internal/log"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 )
@@ -10,21 +13,23 @@ import (
 const (
 	sWidth  = 480
 	sHeight = 700
+	title   = "GoRythm"
 )
 
-var audioContext *audio.Context
-
 func main() {
-	audioContext = audio.NewContext(44100) // Initialize the audio context once
+	audioContext := audio.NewContext(44100) // Initialize the audio context once
 
-	game := &Game{}
-	err := game.Init()
+	// Initialize the game
+	game := game.NewGame()
+	err := game.Init(audioContext, sWidth, sHeight)
 	if err != nil {
-		logMessage(FATAL, "Failed to initialize the game: "+err.Error())
+		log.LogMessage(log.FATAL, "Failed to initialize the game: "+err.Error())
 	}
 	ebiten.SetWindowSize(sWidth, sHeight)
-	ebiten.SetWindowTitle("GopherTicTacToe")
+	ebiten.SetWindowTitle(title)
+
+	// Run the game
 	if err := ebiten.RunGame(game); err != nil {
-		logMessage(FATAL, "Failed to run the game: "+err.Error())
+		log.LogMessage(log.FATAL, "Failed to run the game: "+err.Error())
 	}
 }

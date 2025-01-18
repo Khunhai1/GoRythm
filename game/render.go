@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"fmt"
@@ -13,18 +13,18 @@ import (
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	if gameState == StateMenu {
+	if g.state == StateMenu {
 		g.DrawMenu(screen)
 		return
 	}
-	if gameState == StateLoading {
+	if g.state == StateLoading {
 		g.DrawTimer(screen)
 	}
 	// Draw the game elements when playing
-	if gameState == StatePlaying {
+	if g.state == StatePlaying {
 		g.DrawGame(screen)
 	}
-	if gameState == StateGameOver {
+	if g.state == StateGameOver {
 		g.DrawGameOver(screen)
 	}
 }
@@ -54,7 +54,7 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	text.Draw(screen, "3. GoRythm", normalText, 70, 350, colorHard)
 
 	msgStart := "Press ENTER to start"
-	text.Draw(screen, msgStart, normalText, sWidth/2, sHeight/2, color.White)
+	text.Draw(screen, msgStart, normalText, g.sWidth/2, g.sHeight/2, color.White)
 }
 
 func (g *Game) DrawTimer(screen *ebiten.Image) {
@@ -64,19 +64,18 @@ func (g *Game) DrawTimer(screen *ebiten.Image) {
 		if g.countdown == 0 {
 			msgTimer = "Go"
 		}
-		text.Draw(screen, msgTimer, bigText, (sWidth-text.BoundString(bigText, msgTimer).Dx())/2, sHeight/2, color.White)
+		text.Draw(screen, msgTimer, bigText, (g.sWidth-text.BoundString(bigText, msgTimer).Dx())/2, g.sHeight/2, color.White)
 	}
 }
 
 func (g *Game) DrawGame(screen *ebiten.Image) {
-	screen.DrawImage(boardImage, nil)
-	screen.DrawImage(gameImage, nil)
-	// mx, my := ebiten.CursorPosition()
+	screen.DrawImage(g.boardImage, nil)
+	screen.DrawImage(g.gameImage, nil)
 
 	// Calculate the elapsed time
 	elapsed := time.Since(g.startTime).Seconds()
 
-	if gameState != StateGameOver {
+	if g.state != StateGameOver {
 		if g.gameMode == 3 {
 			for _, beat := range g.goRythm.beatMap {
 				if elapsed >= beat.Time && elapsed < beat.Time+0.1 { // Allow a small margin for matching
@@ -91,18 +90,18 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 		if time.Since(g.circleColorChangeTime).Seconds() < 0.5 {
 			circleColor = color.RGBA{255, 0, 0, 255} // Red color
 		}
-		ebitenutil.DrawCircle(screen, float64(sWidth)/2, sHeight-100, 50, circleColor)
+		ebitenutil.DrawCircle(screen, float64(g.sWidth)/2, float64(g.sHeight)-100, 50, circleColor)
 	}
 
 	// Draw rounds
 	msgRounds := fmt.Sprintf("Round: %v", g.rounds)
-	text.Draw(screen, msgRounds, normalText, 10, sHeight-30, color.White)
+	text.Draw(screen, msgRounds, normalText, 10, g.sHeight-30, color.White)
 
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)
+	text.Draw(screen, msgOX, normalText, (g.sWidth-150)/2, g.sHeight-5, color.White)
 
 	msgPlayer := fmt.Sprintf("Player: %v", g.playing)
-	text.Draw(screen, msgPlayer, normalText, 10, sHeight-50, color.White)
+	text.Draw(screen, msgPlayer, normalText, 10, g.sHeight-50, color.White)
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
@@ -110,7 +109,7 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	if g.win != "" {
 		_, winningLine := g.CheckWin()
 		if winningLine != nil {
-			dc := gg.NewContext(sWidth, sWidth)
+			dc := gg.NewContext(g.sWidth, g.sWidth)
 			dc.SetColor(color.RGBA{R: 255, G: 0, B: 0, A: 255}) // Red color for the winning line
 			dc.SetLineWidth(10)
 			startX := float64(winningLine[0][1]*160 + 80)
@@ -123,14 +122,14 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 		}
 	}
 	msgPressEnter := "Press ENTER to play again"
-	text.Draw(screen, msgPressEnter, normalText, (sWidth-150)/2, sHeight-30, color.White)
+	text.Draw(screen, msgPressEnter, normalText, (g.sWidth-150)/2, g.sHeight-30, color.White)
 	if g.win != "" {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
-		text.Draw(screen, msgWin, bigText, (sWidth-150)/2, sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
+		text.Draw(screen, msgWin, bigText, (g.sWidth-150)/2, g.sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
 	} else {
 		msgDraw := "It's a draw!"
-		text.Draw(screen, msgDraw, bigText, (sWidth-150)/2, sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
+		text.Draw(screen, msgDraw, bigText, (g.sWidth-150)/2, g.sHeight-60, color.RGBA{G: 50, B: 200, A: 255})
 	}
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	text.Draw(screen, msgOX, normalText, (sWidth-150)/2, sHeight-5, color.White)
+	text.Draw(screen, msgOX, normalText, (g.sWidth-150)/2, g.sHeight-5, color.White)
 }

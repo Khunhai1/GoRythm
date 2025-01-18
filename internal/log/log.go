@@ -1,4 +1,4 @@
-package main
+package log
 
 import (
 	"log"
@@ -14,7 +14,7 @@ const (
 )
 
 // Filters log messages based on the log level
-func logMessage(level int, message string) {
+func LogMessage(level int, message string) {
 	if level >= CURRENT {
 		switch level {
 		case DEBUG:

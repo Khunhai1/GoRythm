@@ -1,6 +1,7 @@
-package main
+package game
 
 import (
+	"GoTicTacToe/internal/log"
 	"math"
 	"time"
 )
@@ -29,10 +30,10 @@ type GoRythm struct {
 	beatMap      []Beat      // The beat map for the music, containing the time and beat number of each beat
 }
 
-func NewGoRythmGame() *GoRythm {
+func NewGoRythm() *GoRythm {
 	bm, err := loadBeatmap()
 	if err != nil {
-		logMessage(FATAL, "Failed to load beatmap:"+err.Error())
+		log.LogMessage(log.FATAL, "Failed to load beatmap:"+err.Error())
 	}
 	return &GoRythm{
 		movesO:       make(chan [2]int, 2),
@@ -101,8 +102,27 @@ func (g *GoRythm) moveToHighlight(playing string) (highlight bool, toHighlight [
 	panic("Invalid player")
 }
 
+func (g *Game) CalculateScore() int {
+	// Get the current elapsed time
+	elapsed := time.Since(g.startTime).Seconds()
+
+	// Find the closest beat time
+	var closestBeatTime float64
+	minDifference := math.MaxFloat64
+	for _, beat := range g.goRythm.beatMap {
+		difference := math.Abs(beat.Time - elapsed)
+		if difference < minDifference {
+			minDifference = difference
+			closestBeatTime = beat.Time
+		}
+	}
+
+	// Calculate the precision score
+	return g.calculateScore(closestBeatTime)
+}
+
 // Calculate the score based on the precision when hitting a beat.
-func (g *Game) CalculateScore(beatTime float64) int {
+func (g *Game) calculateScore(beatTime float64) int {
 	elapsed := time.Since(g.startTime).Seconds()
 	if math.Abs(beatTime-elapsed) < perfectPrec {
 		return perfectScore
