@@ -1,5 +1,20 @@
 package main
 
+import (
+	"math"
+	"time"
+)
+
+const (
+	missedScore  = 0    // Score when missing a beat
+	perfectScore = 300  // Score when hitting a beat perfectly
+	goodScore    = 100  // Score when hitting a beat well
+	okScore      = 50   // Score when hitting a beat ok
+	perfectPrec  = 0.1  // Precision for perfect score (in seconds)
+	goodPrec     = 0.25 // Precision for good score (in seconds)
+	okPrec       = 0.4  // Precision for ok score (in seconds)
+)
+
 var (
 	noMove = [2]int{-1, -1}
 )
@@ -11,14 +26,20 @@ type GoRythm struct {
 	movesX       chan [2]int // The last two moves made by player X
 	toBeRemovedO [2]int      // The last third move made by player O that will be removed next round
 	toBeRemovedX [2]int      // The last third move made by player X that will be removed next round
+	beatMap      []Beat      // The beat map for the music, containing the time and beat number of each beat
 }
 
 func NewGoRythmGame() *GoRythm {
+	bm, err := loadBeatmap()
+	if err != nil {
+		logMessage(FATAL, "Failed to load beatmap:"+err.Error())
+	}
 	return &GoRythm{
 		movesO:       make(chan [2]int, 2),
 		movesX:       make(chan [2]int, 2),
 		toBeRemovedO: noMove,
 		toBeRemovedX: noMove,
+		beatMap:      bm,
 	}
 }
 
@@ -78,4 +99,18 @@ func (g *GoRythm) moveToHighlight(playing string) (highlight bool, toHighlight [
 		return false, noMove
 	}
 	panic("Invalid player")
+}
+
+// Calculate the score based on the precision when hitting a beat.
+func (g *Game) CalculateScore(beatTime float64) int {
+	elapsed := time.Since(g.startTime).Seconds()
+	if math.Abs(beatTime-elapsed) < perfectPrec {
+		return perfectScore
+	} else if math.Abs(beatTime-elapsed) < goodPrec {
+		return goodScore
+	} else if math.Abs(beatTime-elapsed) < okPrec {
+		return okScore
+	} else {
+		return missedScore
+	}
 }

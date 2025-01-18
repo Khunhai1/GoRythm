@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -88,7 +87,7 @@ func (g *Game) Update() error {
 	case StatePlaying:
 		if g.gameMode == 3 && g.startTime.IsZero() {
 			g.startTime = time.Now()
-			log.Println("Start time:", g.startTime)
+			logMessage(DEBUG, fmt.Sprintf("Start time: %v", g.startTime))
 		}
 		switch {
 		// Human vs easy AI

@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "image/png"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
@@ -21,11 +20,11 @@ func main() {
 	game := &Game{}
 	err := game.Init()
 	if err != nil {
-		log.Fatal(err)
+		logMessage(FATAL, "Failed to initialize the game: "+err.Error())
 	}
 	ebiten.SetWindowSize(sWidth, sHeight)
 	ebiten.SetWindowTitle("GopherTicTacToe")
 	if err := ebiten.RunGame(game); err != nil {
-		log.Fatal(err)
+		logMessage(FATAL, "Failed to run the game: "+err.Error())
 	}
 }

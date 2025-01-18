@@ -13,7 +13,7 @@ const (
 	sampleRate = 44100
 )
 
-//go:embed audio/1.mp3
+//go:embed assets/audio/1.mp3
 var mp3Data []byte
 
 type AudioPlayer struct {

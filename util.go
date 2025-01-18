@@ -8,13 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	missed  = 0
-	perfect = 300
-	good    = 100
-	ok      = 50
-)
-
 func newRandom() *rand.Rand {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	return rand.New(s1)
@@ -32,7 +25,7 @@ func (g *Game) placeSymbol(x int, y int) {
 	// Find the closest beat time
 	var closestBeatTime float64
 	minDifference := math.MaxFloat64
-	for _, beat := range modifiedBeatmap {
+	for _, beat := range g.goRythm.beatMap {
 		difference := math.Abs(beat.Time - elapsed)
 		if difference < minDifference {
 			minDifference = difference
@@ -41,7 +34,8 @@ func (g *Game) placeSymbol(x int, y int) {
 	}
 
 	// Calculate the precision score
-	precisionScore := g.CalculatePrecision(closestBeatTime)
+	precisionScore := g.CalculateScore(closestBeatTime)
+
 	switch g.playing {
 	case "O":
 		g.board[x][y] = "O"
@@ -207,18 +201,4 @@ func (g *Game) IsBoardFull() bool {
 		}
 	}
 	return true
-}
-
-// Func to calculate precision of timing to place symbol and the beatmap corresponding
-func (g *Game) CalculatePrecision(beatTime float64) int {
-	elapsed := time.Since(g.startTime).Seconds()
-	if math.Abs(beatTime-elapsed) < 0.1 {
-		return perfect
-	} else if math.Abs(beatTime-elapsed) < 0.25 {
-		return good
-	} else if math.Abs(beatTime-elapsed) < 0.4 {
-		return ok
-	} else {
-		return missed
-	}
 }

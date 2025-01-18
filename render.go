@@ -78,7 +78,7 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 
 	if gameState != StateGameOver {
 		if g.gameMode == 3 {
-			for _, beat := range modifiedBeatmap {
+			for _, beat := range g.goRythm.beatMap {
 				if elapsed >= beat.Time && elapsed < beat.Time+0.1 { // Allow a small margin for matching
 					g.circleColorChangeTime = time.Now()
 					break

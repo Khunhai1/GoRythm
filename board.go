@@ -2,7 +2,6 @@ package main
 
 import (
 	"image/color"
-	"log"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -51,7 +50,7 @@ func (g *Game) Init() error {
 	if err != nil {
 		return err
 	}
-	loadBeatmap()
+
 	return nil
 }
 
@@ -117,7 +116,7 @@ func (g *Game) initAudio() error {
 	}
 	ap, err := NewAudioPlayer(audioContext) // Use the global audio context
 	if err != nil {
-		log.Printf("failed to init audio player: %v", err)
+		logMessage(ERROR, "failed to init audio player: "+err.Error())
 		return err
 	}
 	g.audioPlayer = ap
