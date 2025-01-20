@@ -57,8 +57,8 @@ const (
 
 // Global variables
 var (
-	// The current game state
-	numpadToBoard = map[ebiten.Key][2]int{
+	// The input to board position mapping
+	keyboardToBoard = map[ebiten.Key][2]int{
 		ebiten.KeyKP1: {0, 2},
 		ebiten.KeyKP2: {1, 2},
 		ebiten.KeyKP3: {2, 2},
@@ -68,6 +68,15 @@ var (
 		ebiten.KeyKP7: {0, 0},
 		ebiten.KeyKP8: {1, 0},
 		ebiten.KeyKP9: {2, 0},
+		ebiten.KeyA:   {0, 2},
+		ebiten.KeyS:   {1, 2},
+		ebiten.KeyD:   {2, 2},
+		ebiten.KeyQ:   {0, 1},
+		ebiten.KeyW:   {1, 1},
+		ebiten.KeyE:   {2, 1},
+		ebiten.Key1:   {0, 0},
+		ebiten.Key2:   {1, 0},
+		ebiten.Key3:   {2, 0},
 	}
 )
 
@@ -200,7 +209,7 @@ func (g *Game) handleStatePlaying() error {
 		g.performMove(x, y)
 	// Human vs human
 	case g.player == "human":
-		for key, pos := range numpadToBoard {
+		for key, pos := range keyboardToBoard {
 			if inpututil.IsKeyJustPressed(key) {
 				x, y := pos[0], pos[1]
 				if g.board[x][y] == "" {
