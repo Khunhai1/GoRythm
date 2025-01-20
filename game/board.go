@@ -1,7 +1,7 @@
 package game
 
 import (
-	"image/color"
+	"GoRythm/internal/theme"
 
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,17 +16,13 @@ const (
 	symbolSpacing     = 20
 )
 
-var (
-	greyColor = color.RGBA{82, 82, 82, 255}
-)
-
 func (g *Game) GenerateBoard(screen *ebiten.Image, sWidth int) *ebiten.Image {
 	dc := gg.NewContext(sWidth, sWidth)
-	dc.SetColor(color.Black)
+	dc.SetColor(theme.BackgroundColor)
 	dc.Clear()
 
 	// Draw grid lines
-	dc.SetColor(color.White)
+	dc.SetColor(theme.BoardColor)
 	for i := 1; i <= 2; i++ {
 		gridLinePosition := i*cellSize - gridLineThickness/2
 		dc.DrawLine(float64(gridLinePosition), 0, float64(gridLinePosition), float64(sWidth))
@@ -43,33 +39,33 @@ func (g *Game) GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Ima
 	dc.Clear()
 
 	imageO := gg.NewContext(effectiveCellSize, effectiveCellSize)
-	imageO.SetColor(color.White)
+	imageO.SetColor(theme.SymbolOColor)
 	imageO.DrawCircle(effectiveCellSize/2, effectiveCellSize/2, effectiveCellSize/2-symbolSpacing)
 	imageO.SetLineWidth(symbolThickness)
 	imageO.Stroke()
 
 	imageX := gg.NewContext(effectiveCellSize, effectiveCellSize)
-	imageX.SetColor(color.White)
+	imageX.SetColor(theme.SymbolXColor)
 	imageX.SetLineWidth(symbolThickness)
 	imageX.DrawLine(xLinesWidth, xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing)
 	imageX.DrawLine(xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing, xLinesWidth)
 	imageX.Stroke()
 
 	imageOHighlighted := gg.NewContext(effectiveCellSize, effectiveCellSize)
-	imageOHighlighted.SetColor(greyColor)
+	imageOHighlighted.SetColor(theme.ToBeDeletedSymbolsColor)
 	imageOHighlighted.DrawCircle(effectiveCellSize/2, effectiveCellSize/2, effectiveCellSize/2-symbolSpacing)
 	imageOHighlighted.SetLineWidth(symbolThickness)
 	imageOHighlighted.Stroke()
 
 	imageXHighlighted := gg.NewContext(effectiveCellSize, effectiveCellSize)
-	imageXHighlighted.SetColor(greyColor)
+	imageXHighlighted.SetColor(theme.ToBeDeletedSymbolsColor)
 	imageXHighlighted.SetLineWidth(symbolThickness)
 	imageXHighlighted.DrawLine(xLinesWidth, xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing)
 	imageXHighlighted.DrawLine(xLinesWidth, effectiveCellSize-symbolSpacing, effectiveCellSize-symbolSpacing, xLinesWidth)
 	imageXHighlighted.Stroke()
 
 	imageEmpty := gg.NewContext(effectiveCellSize-3, effectiveCellSize-3)
-	imageEmpty.SetColor(color.Black)
+	imageEmpty.SetColor(theme.BackgroundColor)
 	imageEmpty.Clear()
 
 	return ebiten.NewImageFromImage(imageX.Image()), ebiten.NewImageFromImage(imageO.Image()), ebiten.NewImageFromImage(imageXHighlighted.Image()), ebiten.NewImageFromImage(imageOHighlighted.Image()), ebiten.NewImageFromImage(imageEmpty.Image())

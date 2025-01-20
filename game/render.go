@@ -3,8 +3,8 @@ package game
 import (
 	"GoRythm/internal/log"
 	t "GoRythm/internal/text"
+	"GoRythm/internal/theme"
 	"fmt"
-	"image/color"
 	"time"
 
 	"github.com/fogleman/gg"
@@ -33,22 +33,22 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) DrawMenu(screen *ebiten.Image) {
 	msgTitle := "GopherTicTacToe"
-	t.DrawText(screen, msgTitle, t.BigText, 30, 100, color.White)
+	t.DrawText(screen, msgTitle, t.BigText, 30, 100, theme.TextColor)
 	msgDifficulty := "Choose difficulty:"
-	t.DrawText(screen, msgDifficulty, t.NormalText, 70, 200, color.White)
+	t.DrawText(screen, msgDifficulty, t.NormalText, 70, 200, theme.TextColor)
 
 	// Highlight the selected difficulty
-	colorEasy := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	colorMedium := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	colorHard := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+	colorEasy := theme.TextColor
+	colorMedium := theme.TextColor
+	colorHard := theme.TextColor
 
 	switch g.gameMode {
 	case 1:
-		colorEasy = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red
+		colorEasy = theme.SelectedTextColor
 	case 2:
-		colorMedium = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red
+		colorMedium = theme.SelectedTextColor
 	case 3:
-		colorHard = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red
+		colorHard = theme.SelectedTextColor
 	}
 
 	t.DrawText(screen, "1. Easy", t.NormalText, 70, 250, colorEasy)
@@ -56,7 +56,7 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	t.DrawText(screen, "3. GoRythm", t.NormalText, 70, 350, colorHard)
 
 	msgStart := "Press ENTER to start"
-	t.DrawText(screen, msgStart, t.NormalText, g.sWidth/2, g.sHeight/2, color.White)
+	t.DrawText(screen, msgStart, t.NormalText, g.sWidth/2, g.sHeight/2, theme.TextColor)
 }
 
 func (g *Game) DrawTimer(screen *ebiten.Image) {
@@ -67,7 +67,7 @@ func (g *Game) DrawTimer(screen *ebiten.Image) {
 			msgTimer = "Go"
 		}
 		textWidth, _ := text.Measure(msgTimer, t.BigText, 0)
-		t.DrawText(screen, msgTimer, t.BigText, (g.sWidth-int(textWidth))/2, g.sHeight/2, color.White)
+		t.DrawText(screen, msgTimer, t.BigText, (g.sWidth-int(textWidth))/2, g.sHeight/2, theme.TextColor)
 	}
 }
 
@@ -91,23 +91,30 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 			}
 
 			// Draw the circle
-			circleColor := color.RGBA{0, 0, 255, 255} // Blue color
+			beat := false
+			circleColor := theme.CircleNoBeatColor
 			if time.Since(g.goRythm.circleColorChangeTime).Seconds() < 0.5 {
-				circleColor = color.RGBA{255, 0, 0, 255} // Red color
+				circleColor = theme.CircleBeatColor
+				beat = true
 			}
 			vector.DrawFilledCircle(screen, float32(g.sWidth)/2, float32(g.sHeight)-100, 50, circleColor, false)
+			if beat {
+				msgBeat := "Click !"
+				textWidth, _ := text.Measure(msgBeat, t.NormalText, 0)
+				t.DrawText(screen, msgBeat, t.NormalText, (g.sWidth-int(textWidth))/2, g.sHeight-100, theme.TextColor)
+			}
 		}
 	}
 
 	// Draw rounds
 	msgRounds := fmt.Sprintf("Round: %v", g.rounds)
-	t.DrawText(screen, msgRounds, t.NormalText, 10, g.sHeight-30, color.White)
+	t.DrawText(screen, msgRounds, t.NormalText, 10, g.sHeight-30, theme.TextColor)
 
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, color.White)
+	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, theme.TextColor)
 
 	msgPlayer := fmt.Sprintf("Player: %v", g.playing)
-	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-50, color.White)
+	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-50, theme.TextColor)
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
@@ -116,7 +123,7 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 		_, winningLine := g.CheckWin()
 		if winningLine != nil {
 			dc := gg.NewContext(g.sWidth, g.sWidth)
-			dc.SetColor(color.RGBA{R: 255, G: 0, B: 0, A: 255}) // Red color for the winning line
+			dc.SetColor(theme.WinningLineColor)
 			dc.SetLineWidth(10)
 			startX := float64(winningLine[0][1]*160 + 80)
 			startY := float64(winningLine[0][0]*160 + 80)
@@ -128,14 +135,14 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 		}
 	}
 	msgPressEnter := "Press ENTER to play again"
-	t.DrawText(screen, msgPressEnter, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, color.White)
+	t.DrawText(screen, msgPressEnter, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, theme.TextColor)
 	if g.win != "" {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
-		t.DrawText(screen, msgWin, t.BigText, (g.sWidth-150)/2, g.sHeight-100, color.RGBA{G: 50, B: 200, A: 255})
+		t.DrawText(screen, msgWin, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
 	} else {
 		msgDraw := "It's a draw!"
-		t.DrawText(screen, msgDraw, t.BigText, (g.sWidth-150)/2, g.sHeight-100, color.RGBA{G: 50, B: 200, A: 255})
+		t.DrawText(screen, msgDraw, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
 	}
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, color.White)
+	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, theme.TextColor)
 }
