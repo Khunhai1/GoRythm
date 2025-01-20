@@ -114,10 +114,10 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	t.DrawText(screen, msgRounds, t.NormalText, 10, g.sHeight-30, theme.TextColor)
 
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, theme.TextColor)
+	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, theme.TextColor)
 
 	msgPlayer := fmt.Sprintf("Player: %v", g.currentPlayerSymbol)
-	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-50, theme.TextColor)
+	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-60, theme.TextColor)
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
@@ -138,7 +138,7 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 		}
 	}
 	msgPressEnter := "Press ENTER to play again"
-	t.DrawText(screen, msgPressEnter, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, theme.TextColor)
+	t.DrawText(screen, msgPressEnter, t.NormalText, (g.sWidth-150)/2, g.sHeight-130, theme.TextColor)
 	if g.win != NONE_PLAYING {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
 		t.DrawText(screen, msgWin, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
@@ -147,5 +147,5 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 		t.DrawText(screen, msgDraw, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
 	}
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
-	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, theme.TextColor)
+	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, theme.TextColor)
 }

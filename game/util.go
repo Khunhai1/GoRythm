@@ -8,6 +8,8 @@ import (
 	"math/rand"
 	"time"
 
+	board "GoRythm/internal/generation"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -26,12 +28,12 @@ func (g *Game) placeSymbol(x int, y int) {
 	case O_PLAYING:
 		g.board[x][y] = O_PLAYING
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		options.GeoM.Translate(float64(x*board.CellSize), float64(y*board.CellSize))
 		g.gameImage.DrawImage(g.OImage, options)
 	case X_PLAYING:
 		g.board[x][y] = X_PLAYING
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		options.GeoM.Translate(float64(x*board.CellSize), float64(y*board.CellSize))
 		g.gameImage.DrawImage(g.XImage, options)
 	}
 }
@@ -39,7 +41,7 @@ func (g *Game) placeSymbol(x int, y int) {
 func (g *Game) removeSymbol(x, y int) {
 	g.board[x][y] = NONE_PLAYING
 	options := &ebiten.DrawImageOptions{}
-	options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+	options.GeoM.Translate(float64(x*board.CellSize), float64(y*board.CellSize))
 	g.gameImage.DrawImage(g.EmptyImage, options)
 }
 
@@ -47,11 +49,11 @@ func (g *Game) highlightSymbol(x, y int) {
 	switch g.currentPlayerSymbol {
 	case O_PLAYING:
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		options.GeoM.Translate(float64(x*board.CellSize), float64(y*board.CellSize))
 		g.gameImage.DrawImage(g.OImageHighlighted, options)
 	case X_PLAYING:
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
+		options.GeoM.Translate(float64(x*board.CellSize), float64(y*board.CellSize))
 		g.gameImage.DrawImage(g.XImageHighlighted, options)
 	}
 }

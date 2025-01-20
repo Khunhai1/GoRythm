@@ -7,6 +7,7 @@ package game
 
 import (
 	a "GoRythm/internal/audio"
+	gen "GoRythm/internal/generation"
 	"GoRythm/internal/log"
 	"fmt"
 	"time"
@@ -108,8 +109,8 @@ func (g *Game) Init(audioContext *audio.Context, sWidth, sHeight int) error {
 
 	// Generate the squared game board and symbols
 	g.gameImage = ebiten.NewImage(sWidth, sWidth)
-	g.boardImage = g.GenerateBoard(g.gameImage, sWidth)
-	g.XImage, g.OImage, g.XImageHighlighted, g.OImageHighlighted, g.EmptyImage = g.GenerateSymbols(g.gameImage)
+	g.boardImage = gen.GenerateBoard(g.gameImage, sWidth)
+	g.XImage, g.OImage, g.XImageHighlighted, g.OImageHighlighted, g.EmptyImage = gen.GenerateSymbols(g.gameImage)
 
 	g.randomizeStartingPlayer()
 
