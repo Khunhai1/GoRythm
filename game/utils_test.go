@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+// TestPlaceSymbol tests the placeSymbol function.
+// Checks if the symbol is placed correctly on the board.
 func TestPlaceSymbol(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -19,6 +21,8 @@ func TestPlaceSymbol(t *testing.T) {
 	}
 }
 
+// TestRemoveSymbol tests the removeSymbol function.
+// Checks if the symbol is removed correctly from the board.
 func TestRemoveSymbol(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -32,6 +36,8 @@ func TestRemoveSymbol(t *testing.T) {
 	}
 }
 
+// TestSwitchPlayer tests the switchPlayer function.
+// Checks if the current player is switched correctly based on the current player.
 func TestSwitchPlayer(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -49,6 +55,8 @@ func TestSwitchPlayer(t *testing.T) {
 	}
 }
 
+// TestEasyCpu tests the EasyCpu function.
+// Checks if the function returns a valid move.
 func TestEasyCpu(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -65,6 +73,8 @@ func TestEasyCpu(t *testing.T) {
 	}
 }
 
+// TestcheckWinBoard tests the checkWinBoard function.
+// Checks if the function returns the correct winner based on the board.
 func TestCheckWinBoard(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -76,12 +86,14 @@ func TestCheckWinBoard(t *testing.T) {
 		{NONE_PLAYING, NONE_PLAYING, NONE_PLAYING},
 	}
 
-	winner, _ := g.CheckWinBoard()
+	winner, _ := g.checkWinBoard()
 	if winner != X_PLAYING {
-		t.Errorf("CheckWinBoard failed, expected X, got %s", winner)
+		t.Errorf("checkWinBoard failed, expected X, got %s", winner)
 	}
 }
 
+// FuzzcheckWinBoard is a fuzzing test for the checkWinBoard function.
+// It generates random board configurations and checks if the function returns a valid winner.
 func FuzzCheckWinBoard(f *testing.F) {
 	// Add some seed cases (optional)
 	f.Add("XXX------")
@@ -113,13 +125,15 @@ func FuzzCheckWinBoard(f *testing.F) {
 		g.board = arrBoard
 
 		// Check for a winner
-		winner, _ := g.CheckWinBoard()
+		winner, _ := g.checkWinBoard()
 		if winner != NONE_PLAYING && winner != X_PLAYING && winner != O_PLAYING {
-			t.Errorf("CheckWinBoard returned an invalid winner: %s", winner)
+			t.Errorf("checkWinBoard returned an invalid winner: %s", winner)
 		}
 	})
 }
 
+// TestIsBoardFull tests the isBoardFull function.
+// Checks if the function returns true when the board is full and false otherwise.
 func TestIsBoardFull(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -131,16 +145,18 @@ func TestIsBoardFull(t *testing.T) {
 		{X_PLAYING, O_PLAYING, X_PLAYING},
 	}
 
-	if !g.IsBoardFull() {
-		t.Errorf("IsBoardFull failed, expected true, got false")
+	if !g.isBoardFull() {
+		t.Errorf("isBoardFull failed, expected true, got false")
 	}
 
 	g.board[0][0] = NONE_PLAYING
-	if g.IsBoardFull() {
-		t.Errorf("IsBoardFull failed, expected false, got true")
+	if g.isBoardFull() {
+		t.Errorf("isBoardFull failed, expected false, got true")
 	}
 }
 
+// TestHardCpu tests the HardCpu function.
+// Checks if the function returns a valid move.
 func TestHardCpu(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -157,6 +173,9 @@ func TestHardCpu(t *testing.T) {
 	}
 }
 
+// TestMinimax tests the minimax function for the player X.
+// Checks if the function returns the correct score for the current board state,
+// the player X should always win.
 func TestMinimax_WinForX(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -176,6 +195,9 @@ func TestMinimax_WinForX(t *testing.T) {
 	}
 }
 
+// TestMinimax tests the minimax function for the player O.
+// Checks if the function returns the correct score for the current board state,
+// the player O should always win.
 func TestMinimax_WinForO(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -194,6 +216,9 @@ func TestMinimax_WinForO(t *testing.T) {
 	}
 }
 
+// TestMinimax_Draw tests the minimax function for a draw.
+// Checks if the function returns the correct score for the current board state,
+// the game should end in a draw.
 func TestMinimax_Draw(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -212,6 +237,9 @@ func TestMinimax_Draw(t *testing.T) {
 	}
 }
 
+// TestMinimax_BestMove tests the minimax function for the best move.
+// Checks if the function returns the correct score for the current board state,
+// the AI (X) should find the best move to win.
 func TestMinimax_BestMove(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -230,28 +258,30 @@ func TestMinimax_BestMove(t *testing.T) {
 	}
 }
 
+// TestCheckWinScore tests the checkWinScore function.
+// Checks if the function returns the correct winner based on the score.
 func TestCheckWinScore(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	winner := g.CheckWinScore()
+	winner := g.checkWinScore()
 
 	if winner != NONE_PLAYING {
-		t.Errorf("CheckWinScore failed, expected no winner, got %s", winner)
+		t.Errorf("checkWinScore failed, expected no winner, got %s", winner)
 	}
 
 	g.pointsX = 500
 	g.pointsO = 300
 
-	winner = g.CheckWinScore()
+	winner = g.checkWinScore()
 	if winner != X_PLAYING {
-		t.Errorf("CheckWinScore failed, expected X, got %s", winner)
+		t.Errorf("checkWinScore failed, expected X, got %s", winner)
 	}
 
 	g.pointsO += 400
-	winner = g.CheckWinScore()
+	winner = g.checkWinScore()
 	if winner != O_PLAYING {
-		t.Errorf("CheckWinScore failed, expected O, got %s", winner)
+		t.Errorf("checkWinScore failed, expected O, got %s", winner)
 	}
 }

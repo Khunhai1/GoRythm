@@ -4,7 +4,6 @@
 package game
 
 import (
-	"math"
 	"math/rand"
 	"time"
 
@@ -13,11 +12,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// newRandom returns a new random number generator based on the current time.
 func newRandom() *rand.Rand {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	return rand.New(s1)
 }
 
+// placeSymbol places the current player symbol on the board at the given position.
+// It also calls the draw function to display the symbol on the screen.
 func (g *Game) placeSymbol(x int, y int) {
 	switch g.currentPlayerSymbol {
 	case O_PLAYING:
@@ -33,6 +35,8 @@ func (g *Game) placeSymbol(x int, y int) {
 	}
 }
 
+// removeSymbol removes the symbol from the board at the given position.
+// It also calls the draw function to remove the symbol from the screen.
 func (g *Game) removeSymbol(x, y int) {
 	g.board[x][y] = NONE_PLAYING
 	options := &ebiten.DrawImageOptions{}
@@ -40,6 +44,8 @@ func (g *Game) removeSymbol(x, y int) {
 	g.gameImage.DrawImage(g.EmptyImage, options)
 }
 
+// highlightSymbol highlights the symbol on the board at the given position.
+// It also calls the draw function to display the highlighted symbol on the screen.
 func (g *Game) highlightSymbol(x, y int) {
 	switch g.currentPlayerSymbol {
 	case O_PLAYING:
@@ -53,13 +59,14 @@ func (g *Game) highlightSymbol(x, y int) {
 	}
 }
 
+// switchPlayer switches the current player and player type based on the game mode.
 func (g *Game) switchPlayer() {
 	if g.currentPlayerSymbol == X_PLAYING {
 		g.currentPlayerSymbol = O_PLAYING
 	} else {
 		g.currentPlayerSymbol = X_PLAYING
 	}
-	if g.gameMode != GORYTHM_MODE {
+	if g.gameMode != GORYTHM_MODE && g.gameMode != CLASSIC_PVP_MODE {
 		if g.currentPlayerType == HUMAN_TYPE {
 			g.currentPlayerType = AI_TYPE
 		} else {
@@ -68,87 +75,8 @@ func (g *Game) switchPlayer() {
 	}
 }
 
-func (g *Game) EasyCpu() (int, int) {
-	r := newRandom()
-	var x, y int
-	for {
-		x = r.Intn(3)
-		y = r.Intn(3)
-		if g.board[x][y] == NONE_PLAYING {
-			break
-		}
-	}
-	return x, y
-}
-
-// HardCpu playing with minimax algorithm
-func (g *Game) HardCpu() (int, int) {
-	bestScore := math.MinInt
-	var bestMove [2]int
-	// Minimax with increased depth
-	for x := 0; x < 3; x++ {
-		for y := 0; y < 3; y++ {
-			if g.board[x][y] == NONE_PLAYING {
-				// Simulate the move
-				g.board[x][y] = X_PLAYING
-				score := g.minimax(0, false)
-				g.board[x][y] = NONE_PLAYING // Undo the move
-
-				// Keep track of the best move
-				if score > bestScore {
-					bestScore = score
-					bestMove = [2]int{x, y}
-				}
-			}
-		}
-	}
-	return bestMove[0], bestMove[1]
-}
-
-func (g *Game) minimax(depth int, isMaximizing bool) int {
-	// Check if game is over
-	winner, _ := g.CheckWinBoard()
-	if winner == X_PLAYING {
-		return 10 - depth // Maximize for AI (X)
-	}
-	if winner == O_PLAYING {
-		return depth - 10 // Minimize for Player (O)
-	}
-	if g.IsBoardFull() {
-		return 0 // Draw
-	}
-
-	// Maximizing Player (AI)
-	if isMaximizing {
-		bestScore := math.MinInt
-		for x := 0; x < 3; x++ {
-			for y := 0; y < 3; y++ {
-				if g.board[x][y] == NONE_PLAYING {
-					g.board[x][y] = X_PLAYING // AI's move
-					score := g.minimax(depth+1, false)
-					g.board[x][y] = NONE_PLAYING // Undo the move
-					bestScore = max(bestScore, score)
-				}
-			}
-		}
-		return bestScore
-	} else { // Minimizing Player (Human)
-		bestScore := math.MaxInt
-		for x := 0; x < 3; x++ {
-			for y := 0; y < 3; y++ {
-				if g.board[x][y] == NONE_PLAYING {
-					g.board[x][y] = O_PLAYING // Human's move
-					score := g.minimax(depth+1, true)
-					g.board[x][y] = NONE_PLAYING // Undo the move
-					bestScore = min(bestScore, score)
-				}
-			}
-		}
-		return bestScore
-	}
-}
-
-func (g *Game) CheckWinBoard() (winner SymbolPlaying, position [][]int) {
+// checkWinBoard checks the winner based on the board and returns the winner and the winning positions.
+func (g *Game) checkWinBoard() (winner SymbolPlaying, position [][]int) {
 	// Check rows
 	for i := 0; i < 3; i++ {
 		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != NONE_PLAYING {
@@ -171,8 +99,8 @@ func (g *Game) CheckWinBoard() (winner SymbolPlaying, position [][]int) {
 	return NONE_PLAYING, nil
 }
 
-// CheckWinScore checks the winner based on the score and returns the winner
-func (g *Game) CheckWinScore() (winner SymbolPlaying) {
+// checkWinScore checks the winner based on the score and returns the winner
+func (g *Game) checkWinScore() (winner SymbolPlaying) {
 	if g.pointsO > g.pointsX {
 		return O_PLAYING
 	} else if g.pointsX > g.pointsO {
@@ -181,7 +109,8 @@ func (g *Game) CheckWinScore() (winner SymbolPlaying) {
 	return NONE_PLAYING
 }
 
-func (g *Game) IsBoardFull() bool {
+// isBoardFull checks if the board is full and returns true if it is.
+func (g *Game) isBoardFull() bool {
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
 			if g.board[i][j] == NONE_PLAYING {

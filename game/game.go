@@ -211,7 +211,7 @@ func (g *Game) handleStatePlaying() error {
 	}
 	// Stop the game when the music ends
 	if !g.audioPlayer.IsPlaying() {
-		g.CheckWinScore()
+		g.checkWinScore()
 		g.state = StateGameOver
 	}
 	switch {
@@ -252,12 +252,9 @@ func (g *Game) handleStatePlaying() error {
 				}
 			}
 		}
-		if g.gameMode == CLASSIC_PVP_MODE {
-			g.currentPlayerType = HUMAN_TYPE
-		}
 	}
 	// Check for win
-	g.win, _ = g.CheckWinBoard()
+	g.win, _ = g.checkWinBoard()
 	if g.win != NONE_PLAYING {
 		if g.win == O_PLAYING {
 			if g.gameMode == GORYTHM_MODE {
@@ -274,12 +271,12 @@ func (g *Game) handleStatePlaying() error {
 		}
 		// Adjust the winner by the score for GoRythm mode
 		if g.gameMode == GORYTHM_MODE {
-			g.win = g.CheckWinScore()
+			g.win = g.checkWinScore()
 		}
 		g.state = StateGameOver
 	}
 	// Check for draw
-	if g.IsBoardFull() {
+	if g.isBoardFull() {
 		g.state = StateGameOver
 	}
 	return nil

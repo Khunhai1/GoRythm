@@ -127,7 +127,7 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	g.DrawGame(screen)
 	if g.win != NONE_PLAYING || g.gameMode == GORYTHM_MODE {
-		_, winningLine := g.CheckWinBoard()
+		_, winningLine := g.checkWinBoard()
 		if winningLine != nil {
 			dc := gg.NewContext(g.sWidth, g.sWidth)
 			dc.SetColor(theme.WinningLineColor)
