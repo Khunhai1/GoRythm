@@ -1,3 +1,8 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
+// Package log provides the utility fonction to log messages with different levels of severity.
+// The log level can be changed by modifying the CURRENT constant.
 package log
 
 import (
