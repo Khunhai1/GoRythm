@@ -71,6 +71,7 @@ jobs:
             libxinerama-dev \
             libxxf86vm-dev \
             libasound2-dev \
+            xvfb \
 
       - name: Install Go dependencies
         run: go get ./cmd/main
@@ -79,7 +80,7 @@ jobs:
         run: go build -v ./cmd/main
 
       - name: Test with the Go CLI
-        run: go test -v ./cmd/main
+        run: xvfb-run -a go test -v ./...
 
         # Upload the WASM build for github pages
       - name: Build for WASM
