@@ -86,6 +86,7 @@ jobs:
       - name: Build for WASM
         run: |
           GOOS=js GOARCH=wasm go build -o public/main.wasm ./cmd/main
+          cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" ./public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
