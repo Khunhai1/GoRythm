@@ -19,8 +19,10 @@ const (
 	SymbolThickness   = 15                             // Symbol thickness in pixels
 	XLinesWidth       = 20                             // X symbol lines width in pixels
 	SymbolSpacing     = 20                             // Symbol spacing in pixels
+	EmptyImageSize    = EffectiveCellSize - 3          // Empty image size in pixels that is used to remove symbols in GoRythm mode (square a bit smaller than the cell)
 )
 
+// GenerateBoard generates the board image with the grid lines and returns it.
 func GenerateBoard(screen *ebiten.Image, sWidth int) *ebiten.Image {
 	dc := gg.NewContext(sWidth, sWidth)
 	dc.SetColor(theme.BackgroundColor)
@@ -39,16 +41,19 @@ func GenerateBoard(screen *ebiten.Image, sWidth int) *ebiten.Image {
 	return ebiten.NewImageFromImage(dc.Image())
 }
 
+// GenerateSymbols generates the symbols images (X, O, highlighted X, highlighted O and empty) and returns them.
 func GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebiten.Image, *ebiten.Image, *ebiten.Image) {
 	dc := gg.NewContext(EffectiveCellSize, EffectiveCellSize)
 	dc.Clear()
 
+	// O symbol image
 	imageO := gg.NewContext(EffectiveCellSize, EffectiveCellSize)
 	imageO.SetColor(theme.SymbolOColor)
 	imageO.DrawCircle(EffectiveCellSize/2, EffectiveCellSize/2, EffectiveCellSize/2-SymbolSpacing)
 	imageO.SetLineWidth(SymbolThickness)
 	imageO.Stroke()
 
+	// X symbol image
 	imageX := gg.NewContext(EffectiveCellSize, EffectiveCellSize)
 	imageX.SetColor(theme.SymbolXColor)
 	imageX.SetLineWidth(SymbolThickness)
@@ -56,12 +61,14 @@ func GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebite
 	imageX.DrawLine(XLinesWidth, EffectiveCellSize-SymbolSpacing, EffectiveCellSize-SymbolSpacing, XLinesWidth)
 	imageX.Stroke()
 
+	// Highlighted O symbol image
 	imageOHighlighted := gg.NewContext(EffectiveCellSize, EffectiveCellSize)
 	imageOHighlighted.SetColor(theme.ToBeDeletedSymbolsColor)
 	imageOHighlighted.DrawCircle(EffectiveCellSize/2, EffectiveCellSize/2, EffectiveCellSize/2-SymbolSpacing)
 	imageOHighlighted.SetLineWidth(SymbolThickness)
 	imageOHighlighted.Stroke()
 
+	// Highlighted X symbol image
 	imageXHighlighted := gg.NewContext(EffectiveCellSize, EffectiveCellSize)
 	imageXHighlighted.SetColor(theme.ToBeDeletedSymbolsColor)
 	imageXHighlighted.SetLineWidth(SymbolThickness)
@@ -69,7 +76,8 @@ func GenerateSymbols(screen *ebiten.Image) (*ebiten.Image, *ebiten.Image, *ebite
 	imageXHighlighted.DrawLine(XLinesWidth, EffectiveCellSize-SymbolSpacing, EffectiveCellSize-SymbolSpacing, XLinesWidth)
 	imageXHighlighted.Stroke()
 
-	imageEmpty := gg.NewContext(EffectiveCellSize-3, EffectiveCellSize-3)
+	// Empty symbol image
+	imageEmpty := gg.NewContext(EmptyImageSize, EmptyImageSize)
 	imageEmpty.SetColor(theme.BackgroundColor)
 	imageEmpty.Clear()
 

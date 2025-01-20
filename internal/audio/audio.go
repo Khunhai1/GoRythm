@@ -23,11 +23,14 @@ const (
 //go:embed assets/audio/1.mp3
 var mp3Data []byte
 
+// AudioPlayer is a struct that contains the audio context and player for the game.
 type AudioPlayer struct {
 	context *audio.Context
 	player  *audio.Player
 }
 
+// NewAudioPlayer creates a new AudioPlayer instance with the given audio context.
+// It decodes the MP3 file and create a player with it.
 func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 	// Decode MP3 file
 	stream, err := mp3.DecodeWithSampleRate(SampleRate, bytes.NewReader(mp3Data))
@@ -50,11 +53,13 @@ func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 	return ap, nil
 }
 
+// Play plays the audio player with a fixed volume.
 func (ap *AudioPlayer) Play() {
 	ap.player.SetVolume(Volume)
 	ap.player.Play()
 }
 
+// Restart stops the audio player, rewinds it to the beginning and pauses it.
 func (ap *AudioPlayer) Restart() error {
 	if err := ap.player.Rewind(); err != nil {
 		return err
@@ -63,10 +68,12 @@ func (ap *AudioPlayer) Restart() error {
 	return nil
 }
 
+// Close closes the audio player.
 func (ap *AudioPlayer) Close() error {
 	return ap.player.Close()
 }
 
+// IsPlaying returns whether the audio player is playing or not.
 func (ap *AudioPlayer) IsPlaying() bool {
 	return ap.player.IsPlaying()
 }

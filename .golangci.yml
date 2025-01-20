@@ -1,9 +1,0 @@
-linters-settings:
-  staticcheck:
-    checks:
-      # Disable specific checks
-      - -SA1019
-
-issues:
-  exclude:
-    - "deprecated"
