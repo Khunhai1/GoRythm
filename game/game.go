@@ -48,9 +48,8 @@ type Game struct {
 }
 
 const (
-	countdownDuration   = 3   // The countdown before starting the game (in seconds)
-	scorePerWin         = 1   // The score per win in Classic mode
-	scorePerWin_GoRythm = 250 // The score per win in GoRythm mode
+	countdownDuration = 3 // The countdown before starting the game (in seconds)
+	scorePerWin       = 1 // The score per win in Classic mode
 )
 
 // Global variables
@@ -78,6 +77,7 @@ var (
 	}
 )
 
+// NewGame creates a new game struct with default values and returns it.
 func NewGame() *Game {
 	return &Game{
 		sWidth:              0,
@@ -99,11 +99,12 @@ func NewGame() *Game {
 	}
 }
 
+// Layout returns the game screen size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return g.sWidth, g.sHeight
 }
 
-// Initialize the game, must be called before running the game
+// Init initialize the game attributes, must be called before running the game.
 func (g *Game) Init(audioContext *audio.Context, sWidth, sHeight int) error {
 	// Set variables
 	g.sWidth = sWidth
@@ -124,7 +125,8 @@ func (g *Game) Init(audioContext *audio.Context, sWidth, sHeight int) error {
 	return nil
 }
 
-// Handle game logic
+// Updates is called every frame to update the game logic.
+// Handling is different depending on the current game state.
 func (g *Game) Update() error {
 	switch g.state {
 
@@ -153,10 +155,15 @@ func (g *Game) Update() error {
 	return nil
 }
 
+// handleStateMenu handles the menu state inputs and changes to the loading state
+// when Enter is pressed.
 func (g *Game) handleStateMenu() {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		g.state = StateLoading
 		g.countdownTime = time.Now()
+		if g.gameMode == GORYTHM_MODE {
+			g.goRythm = NewGoRythm()
+		}
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
 		g.gameMode = CLASSIC_PVP_MODE
@@ -169,10 +176,11 @@ func (g *Game) handleStateMenu() {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key4) {
 		g.gameMode = GORYTHM_MODE
-		g.goRythm = NewGoRythm()
 	}
 }
 
+// handleStateLoading handles the loading state and changes to the playing state
+// when the countdown reaches 0.
 func (g *Game) handleStateLoading() error {
 	g.currentPlayerType = HUMAN_TYPE
 	if g.countdown > 0 {
@@ -192,6 +200,10 @@ func (g *Game) handleStateLoading() error {
 	return nil
 }
 
+// handleStatePlaying handles the playing state. The game logic is different depending
+// on the game mode.
+// It also handles the inputs for the players and the AI as well as the win and draw conditions
+// to change to the game over state.
 func (g *Game) handleStatePlaying() error {
 	if g.gameMode == GORYTHM_MODE && g.goRythm.startTime.IsZero() {
 		g.goRythm.Start(time.Now())
@@ -273,6 +285,7 @@ func (g *Game) handleStatePlaying() error {
 	return nil
 }
 
+// handleStateGameOver handles the game over state and restarts the game when Enter is pressed.
 func (g *Game) handleStateGameOver() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		// Restart the game
@@ -288,7 +301,8 @@ func (g *Game) handleStateGameOver() error {
 	return nil
 }
 
-// Restart the game and reset the variables
+// restartGame resets the game variables and randomizes the starting player.
+// Does not change the global state.
 func (g *Game) restartGame() {
 	g.board = [3][3]SymbolPlaying{} // Reset the game board
 	g.rounds = 0                    // Reset the number of rounds
@@ -301,14 +315,14 @@ func (g *Game) restartGame() {
 	g.randomizeStartingPlayer() // Randomize the starting player
 }
 
-// Perform a move by placing the symbol, switching the player and incrementing the rounds
+// performMove places the symbol, switching the player and incrementing the rounds.
 func (g *Game) performMove(x, y int) {
 	g.placeSymbol(x, y)
 	g.switchPlayer()
 	g.rounds++
 }
 
-// Randomizes the starting player
+// randomizeStartingPlayer randomizes the starting player.
 func (g *Game) randomizeStartingPlayer() {
 	if r := newRandom().Intn(2) == 0; r {
 		g.currentPlayerSymbol = O_PLAYING
@@ -317,7 +331,7 @@ func (g *Game) randomizeStartingPlayer() {
 	}
 }
 
-// Init the audio player with the given audio context
+// initAudio inits the audio player with the given audio context.
 func (g *Game) initAudio(ctx *audio.Context) error {
 	if g.audioPlayer != nil {
 		g.audioPlayer.Close()

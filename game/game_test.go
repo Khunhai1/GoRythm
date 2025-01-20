@@ -12,6 +12,8 @@ const (
 	sHeight = 480
 )
 
+// TestNewGame tests the NewGame function.
+// Checks if the function returns a new game instance and if the initial state is StateMenu.
 func TestNewGame(t *testing.T) {
 	g := NewGame()
 	if g == nil {
@@ -22,6 +24,9 @@ func TestNewGame(t *testing.T) {
 	}
 }
 
+// TestGame_Init tests the Init function.
+// Checks if the game is initialized with the correct parameters.
+// Checks if the audio player is initialized and not nil.
 func TestGame_Init(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -35,6 +40,8 @@ func TestGame_Init(t *testing.T) {
 	}
 }
 
+// TestGame_Layout tests the Layout function.
+// Checks if the function returns the correct screen size.
 func TestGame_Layout(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -46,6 +53,8 @@ func TestGame_Layout(t *testing.T) {
 	}
 }
 
+// TestGame_handleStateMenu tests the handleStateMenu function.
+// Checks if the state is changed to StateMenu after Init is called.
 func TestGame_handleStateMenu(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -57,6 +66,8 @@ func TestGame_handleStateMenu(t *testing.T) {
 	}
 }
 
+// TestGame_handleStatePlaying tests the handleStatePlaying function.
+// Checks if the function does not return an error when the state is StatePlaying.
 func TestGame_handleStatePlaying(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -70,6 +81,8 @@ func TestGame_handleStatePlaying(t *testing.T) {
 	}
 }
 
+// TestGame_handleStateGameOver tests the handleStateGameOver function.
+// Checks if the function does not return an error when the state is StateGameOver.
 func TestGame_handleStateGameOver(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -84,6 +97,8 @@ func TestGame_handleStateGameOver(t *testing.T) {
 	}
 }
 
+// TestGame_restartGame tests the restartGame function.
+// Checks if the game is reset with its default attributes.
 func TestGame_restartGame(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -107,6 +122,8 @@ func TestGame_restartGame(t *testing.T) {
 	}
 }
 
+// TestGame_randomizeStartingPlayer tests the randomizeStartingPlayer function.
+// Checks if the current player is either O or X.
 func TestGame_randomizeStartingPlayer(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
@@ -118,6 +135,9 @@ func TestGame_randomizeStartingPlayer(t *testing.T) {
 	}
 }
 
+// TestGame_performMove tests the performMove function.
+// Checks if the move is performed correctly, the player switches and the rounds are incremented.
+// Checks if the move is placed at the correct position.
 func TestGame_performMove(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
