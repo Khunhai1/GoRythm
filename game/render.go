@@ -16,8 +16,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+// Draw draws the game elements based on the current state.
 func (g *Game) Draw(screen *ebiten.Image) {
-
 	if g.state == StateMenu {
 		g.DrawMenu(screen)
 		return
@@ -34,6 +34,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 }
 
+// DrawMenu draws the menu elements (modes and start message).
 func (g *Game) DrawMenu(screen *ebiten.Image) {
 	msgTitle := "GoRythm"
 	t.DrawText(screen, msgTitle, t.BigText, 30, 100, theme.TextColor)
@@ -66,6 +67,7 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	t.DrawText(screen, msgStart, t.NormalText, g.sWidth/2, g.sHeight/2, theme.TextColor)
 }
 
+// DrawTimer draws the countdown timer before the game starts.
 func (g *Game) DrawTimer(screen *ebiten.Image) {
 	// Make a countdown timer of 3 seconds
 	if g.countdown > 0 {
@@ -78,6 +80,8 @@ func (g *Game) DrawTimer(screen *ebiten.Image) {
 	}
 }
 
+// DrawGame draws the game elements (board, rounds, player, scores).
+// It also draws the beat circle for the GoRythm mode.
 func (g *Game) DrawGame(screen *ebiten.Image) {
 	if g.boardImage == nil || g.gameImage == nil {
 		log.LogMessage(log.FATAL, "boardImage or gameImage is nil")
@@ -124,6 +128,8 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-60, theme.TextColor)
 }
 
+// DrawGameOver draws the game over screen with the winner and scores.
+// It also draws the winning line if there is one on the board.
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	g.DrawGame(screen)
 	if g.win != NONE_PLAYING || g.gameMode == GORYTHM_MODE {
