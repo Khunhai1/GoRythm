@@ -239,3 +239,29 @@ func TestMinimax_BestMove(t *testing.T) {
 		t.Errorf("expected score 9, got %d", score)
 	}
 }
+
+func TestCheckWinScore(t *testing.T) {
+	g := NewGame()
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	winner := g.CheckWinScore()
+
+	if winner != NONE_PLAYING {
+		t.Errorf("CheckWinScore failed, expected no winner, got %s", winner)
+	}
+
+	g.pointsX = 500
+	g.pointsO = 300
+
+	winner = g.CheckWinScore()
+	if winner != X_PLAYING {
+		t.Errorf("CheckWinScore failed, expected X, got %s", winner)
+	}
+
+	g.pointsO += 400
+	winner = g.CheckWinScore()
+	if winner != O_PLAYING {
+		t.Errorf("CheckWinScore failed, expected O, got %s", winner)
+	}
+}
