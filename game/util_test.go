@@ -89,6 +89,44 @@ func TestCheckWin(t *testing.T) {
 	}
 }
 
+func FuzzCheckWin(f *testing.F) {
+	// Add some seed cases (optional)
+	f.Add("XXX------")
+	f.Add("O--O--O--")
+	f.Add("XOXOXOXOX")
+
+	f.Fuzz(func(t *testing.T, board string) {
+		if len(board) != 9 {
+			t.Skip("Invalid board configuration")
+		}
+
+		// Convert the string back to a 3x3 array
+		var arrBoard [3][3]string
+		for i := 0; i < 3; i++ {
+			for j := 0; j < 3; j++ {
+				cell := string(board[i*3+j])
+				if cell == "-" {
+					cell = ""
+				}
+				if cell != "X" && cell != "O" && cell != "" {
+					t.Skip("Invalid board configuration")
+				}
+				arrBoard[i][j] = cell
+			}
+		}
+
+		// Create a game instance and set the board
+		g := NewGame()
+		g.board = arrBoard
+
+		// Check for a winner
+		winner, _ := g.CheckWin()
+		if winner != "" && winner != "X" && winner != "O" {
+			t.Errorf("CheckWin returned an invalid winner: %s", winner)
+		}
+	})
+}
+
 func TestIsBoardFull(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
