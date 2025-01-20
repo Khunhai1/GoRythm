@@ -1,7 +1,7 @@
 package game
 
 import (
-	"GoTicTacToe/internal/log"
+	"GoRythm/internal/log"
 	"fmt"
 	"time"
 

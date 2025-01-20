@@ -3,8 +3,8 @@ package main
 import (
 	_ "image/png"
 
-	"GoTicTacToe/game"
-	"GoTicTacToe/internal/log"
+	"GoRythm/game"
+	"GoRythm/internal/log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
