@@ -1,6 +1,7 @@
 package game
 
 import (
+	a "GoRythm/internal/audio"
 	"GoRythm/internal/log"
 	"fmt"
 	"time"
@@ -27,7 +28,7 @@ type Game struct {
 	goRythm *GoRythm // GoRythm mode game struct
 
 	audioContext *audio.Context // The audio context for the game
-	audioPlayer  *AudioPlayer   // The audio player for the game used to play the music
+	audioPlayer  *a.AudioPlayer // The audio player for the game used to play the music
 
 	countdownTime time.Time // The countdown timer
 	countdown     int       // The countdown duration
@@ -299,7 +300,7 @@ func (g *Game) initAudio(ctx *audio.Context) error {
 	if g.audioPlayer != nil {
 		g.audioPlayer.Close()
 	}
-	if ap, err := NewAudioPlayer(ctx); err != nil {
+	if ap, err := a.NewAudioPlayer(ctx); err != nil {
 		log.LogMessage(log.ERROR, "failed to init audio player: "+err.Error())
 		return err
 	} else {

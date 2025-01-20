@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
+// Package theme provides the colors used in the game.
 package theme
 
 import "image/color"

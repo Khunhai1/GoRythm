@@ -1,4 +1,7 @@
-package game
+// Package audio provides audio player feature for playing music in the GoRythm
+// game as well as the beatmap struct, which contains the time and beat number
+// of each beat.
+package audio
 
 import (
 	"bytes"
@@ -10,8 +13,8 @@ import (
 )
 
 const (
-	sampleRate = 44100
-	volume     = 0.05
+	SampleRate = 44100
+	Volume     = 0.05
 )
 
 //go:embed assets/audio/1.mp3
@@ -24,7 +27,7 @@ type AudioPlayer struct {
 
 func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 	// Decode MP3 file
-	stream, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(mp3Data))
+	stream, err := mp3.DecodeWithSampleRate(SampleRate, bytes.NewReader(mp3Data))
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode mp3 file: %w", err)
 	}
@@ -45,7 +48,7 @@ func NewAudioPlayer(ctx *audio.Context) (*AudioPlayer, error) {
 }
 
 func (ap *AudioPlayer) Play() {
-	ap.player.SetVolume(volume)
+	ap.player.SetVolume(Volume)
 	ap.player.Play()
 }
 

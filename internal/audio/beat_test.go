@@ -1,4 +1,4 @@
-package game
+package audio
 
 import (
 	"testing"
@@ -28,7 +28,7 @@ func TestLoadBeatmap(t *testing.T) {
 	}
 
 	// Load the beatmap
-	beats, err := loadBeatmap()
+	beats, err := LoadBeatmap()
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}

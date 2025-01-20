@@ -1,9 +1,15 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
+// GoRythm is a Tic Tac Toe mini-game where 2 players have to place their symbols on the beat
+// of the music. The players can win by aligning 3 symbols or having the most beat score at the end.
 package main
 
 import (
 	_ "image/png"
 
 	"GoRythm/game"
+	a "GoRythm/internal/audio"
 	"GoRythm/internal/log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -11,14 +17,13 @@ import (
 )
 
 const (
-	sWidth     = 480
-	sHeight    = 700
-	title      = "GoRythm"
-	sampleRate = 44100
+	sWidth  = 480       // Screen width
+	sHeight = 700       // Screen height
+	title   = "GoRythm" // Window title
 )
 
 func main() {
-	audioContext := audio.NewContext(sampleRate) // Initialize the audio context once
+	audioContext := audio.NewContext(a.SampleRate) // Initialize the audio context once
 
 	// Initialize the game
 	game := game.NewGame()

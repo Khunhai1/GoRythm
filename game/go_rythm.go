@@ -1,6 +1,7 @@
 package game
 
 import (
+	"GoRythm/internal/audio"
 	"GoRythm/internal/log"
 	"math"
 	"time"
@@ -23,17 +24,17 @@ var (
 // A maximum of three symbols per player can be placed on the board. When the third symbol is placed, the first symbol is removed.
 // The next symbol to be removed in the next round is highlighted.
 type GoRythm struct {
-	movesO                chan [2]int // The last two moves made by player O
-	movesX                chan [2]int // The last two moves made by player X
-	toBeRemovedO          [2]int      // The last third move made by player O that will be removed next round
-	toBeRemovedX          [2]int      // The last third move made by player X that will be removed next round
-	beatMap               []Beat      // The beat map for the music, containing the time and beat number of each beat
-	startTime             time.Time   // The start time for GoRythm mode
-	circleColorChangeTime time.Time   // The last time the circle color changed in GoRythm mode
+	movesO                chan [2]int  // The last two moves made by player O
+	movesX                chan [2]int  // The last two moves made by player X
+	toBeRemovedO          [2]int       // The last third move made by player O that will be removed next round
+	toBeRemovedX          [2]int       // The last third move made by player X that will be removed next round
+	beatMap               []audio.Beat // The beat map for the music, containing the time and beat number of each beat
+	startTime             time.Time    // The start time for GoRythm mode
+	circleColorChangeTime time.Time    // The last time the circle color changed in GoRythm mode
 }
 
 func NewGoRythm() *GoRythm {
-	bm, err := loadBeatmap()
+	bm, err := audio.LoadBeatmap()
 	if err != nil {
 		log.LogMessage(log.FATAL, "Failed to load beatmap:"+err.Error())
 	}

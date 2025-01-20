@@ -1,4 +1,4 @@
-package game
+package audio
 
 import (
 	_ "embed"
@@ -14,7 +14,7 @@ type Beat struct {
 var beatmapData []byte
 
 // Load the beatmap and select only every 2nd beat
-func loadBeatmap() ([]Beat, error) {
+func LoadBeatmap() ([]Beat, error) {
 	var beatmap []Beat
 	err := json.Unmarshal(beatmapData, &beatmap)
 	if err != nil {
