@@ -73,13 +73,13 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	screen.DrawImage(g.gameImage, nil)
 
 	// Calculate the elapsed time
-	elapsed := time.Since(g.startTime).Seconds()
+	elapsed := time.Since(g.goRythm.startTime).Seconds()
 
 	if g.state != StateGameOver {
 		if g.gameMode == 3 {
 			for _, beat := range g.goRythm.beatMap {
 				if elapsed >= beat.Time && elapsed < beat.Time+0.1 { // Allow a small margin for matching
-					g.circleColorChangeTime = time.Now()
+					g.goRythm.circleColorChangeTime = time.Now()
 					break
 				}
 			}
@@ -87,7 +87,7 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 
 		// Draw the circle
 		circleColor := color.RGBA{0, 0, 255, 255} // Blue color
-		if time.Since(g.circleColorChangeTime).Seconds() < 0.5 {
+		if time.Since(g.goRythm.circleColorChangeTime).Seconds() < 0.5 {
 			circleColor = color.RGBA{255, 0, 0, 255} // Red color
 		}
 		ebitenutil.DrawCircle(screen, float64(g.sWidth)/2, float64(g.sHeight)-100, 50, circleColor)

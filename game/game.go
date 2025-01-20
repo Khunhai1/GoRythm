@@ -29,10 +29,8 @@ type Game struct {
 	audioContext *audio.Context // The audio context for the game
 	audioPlayer  *AudioPlayer   // The audio player for the game used to play the music
 
-	countdownTime         time.Time // The countdown timer
-	countdown             int       // The countdown duration
-	startTime             time.Time // The start time for GoRythm mode
-	circleColorChangeTime time.Time // The last time the circle color changed in GoRythm mode
+	countdownTime time.Time // The countdown timer
+	countdown     int       // The countdown duration
 
 	gameImage                            *ebiten.Image // The game image containing the background and symbols are drawn on it
 	boardImage                           *ebiten.Image // The board grid image
@@ -73,24 +71,22 @@ var (
 
 func NewGame() *Game {
 	return &Game{
-		sWidth:                0,
-		sHeight:               0,
-		state:                 StateMenu,
-		gameMode:              0,
-		playing:               "",
-		player:                "",
-		board:                 [3][3]string{},
-		pointsO:               0,
-		pointsX:               0,
-		rounds:                0,
-		win:                   "",
-		goRythm:               nil,
-		audioContext:          nil,
-		audioPlayer:           nil,
-		countdownTime:         time.Time{},
-		countdown:             countdownDuration,
-		startTime:             time.Time{},
-		circleColorChangeTime: time.Time{},
+		sWidth:        0,
+		sHeight:       0,
+		state:         StateMenu,
+		gameMode:      0,
+		playing:       "",
+		player:        "",
+		board:         [3][3]string{},
+		pointsO:       0,
+		pointsX:       0,
+		rounds:        0,
+		win:           "",
+		goRythm:       nil,
+		audioContext:  nil,
+		audioPlayer:   nil,
+		countdownTime: time.Time{},
+		countdown:     countdownDuration,
 	}
 }
 
@@ -185,9 +181,9 @@ func (g *Game) handleStateLoading() error {
 }
 
 func (g *Game) handleStatePlaying() error {
-	if g.gameMode == 3 && g.startTime.IsZero() {
-		g.startTime = time.Now()
-		log.LogMessage(log.DEBUG, fmt.Sprintf("Start time: %v", g.startTime))
+	if g.gameMode == 3 && g.goRythm.startTime.IsZero() {
+		g.goRythm.Start(time.Now())
+		log.LogMessage(log.DEBUG, fmt.Sprintf("Start time: %v", g.goRythm.startTime))
 	}
 	switch {
 	// Human vs easy AI
@@ -215,7 +211,7 @@ func (g *Game) handleStatePlaying() error {
 							g.highlightSymbol(toHighlight[0], toHighlight[1])
 						}
 						// Calculating score on hitting the beat
-						score := g.CalculateScore()
+						score := g.goRythm.CalculateScore()
 						switch g.playing {
 						case "O":
 							g.pointsO += score

@@ -18,3 +18,10 @@ func TestMain(m *testing.M) {
 	setup()
 	m.Run()
 }
+
+// TestAudioContext tests if the audio context is initialized correctly
+func TestAudioContext(t *testing.T) {
+	if audioContext == nil {
+		t.Error("Audio context failed to initialize")
+	}
+}

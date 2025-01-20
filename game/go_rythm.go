@@ -23,11 +23,13 @@ var (
 // A maximum of three symbols per player can be placed on the board. When the third symbol is placed, the first symbol is removed.
 // The next symbol to be removed in the next round is highlighted.
 type GoRythm struct {
-	movesO       chan [2]int // The last two moves made by player O
-	movesX       chan [2]int // The last two moves made by player X
-	toBeRemovedO [2]int      // The last third move made by player O that will be removed next round
-	toBeRemovedX [2]int      // The last third move made by player X that will be removed next round
-	beatMap      []Beat      // The beat map for the music, containing the time and beat number of each beat
+	movesO                chan [2]int // The last two moves made by player O
+	movesX                chan [2]int // The last two moves made by player X
+	toBeRemovedO          [2]int      // The last third move made by player O that will be removed next round
+	toBeRemovedX          [2]int      // The last third move made by player X that will be removed next round
+	beatMap               []Beat      // The beat map for the music, containing the time and beat number of each beat
+	startTime             time.Time   // The start time for GoRythm mode
+	circleColorChangeTime time.Time   // The last time the circle color changed in GoRythm mode
 }
 
 func NewGoRythm() *GoRythm {
@@ -36,12 +38,19 @@ func NewGoRythm() *GoRythm {
 		log.LogMessage(log.FATAL, "Failed to load beatmap:"+err.Error())
 	}
 	return &GoRythm{
-		movesO:       make(chan [2]int, 2),
-		movesX:       make(chan [2]int, 2),
-		toBeRemovedO: noMove,
-		toBeRemovedX: noMove,
-		beatMap:      bm,
+		movesO:                make(chan [2]int, 2),
+		movesX:                make(chan [2]int, 2),
+		toBeRemovedO:          noMove,
+		toBeRemovedX:          noMove,
+		beatMap:               bm,
+		startTime:             time.Time{},
+		circleColorChangeTime: time.Time{},
 	}
+}
+
+// Start the GoRythm mode game by setting the start time.
+func (g *GoRythm) Start(startTime time.Time) {
+	g.startTime = startTime
 }
 
 // Update the game state and return the coordinates where a symbol should be removed or highlighted.
@@ -102,14 +111,14 @@ func (g *GoRythm) moveToHighlight(playing string) (highlight bool, toHighlight [
 	panic("Invalid player")
 }
 
-func (g *Game) CalculateScore() int {
+func (g *GoRythm) CalculateScore() int {
 	// Get the current elapsed time
 	elapsed := time.Since(g.startTime).Seconds()
 
 	// Find the closest beat time
 	var closestBeatTime float64
 	minDifference := math.MaxFloat64
-	for _, beat := range g.goRythm.beatMap {
+	for _, beat := range g.beatMap {
 		difference := math.Abs(beat.Time - elapsed)
 		if difference < minDifference {
 			minDifference = difference
@@ -122,7 +131,7 @@ func (g *Game) CalculateScore() int {
 }
 
 // Calculate the score based on the precision when hitting a beat.
-func (g *Game) calculateScore(beatTime float64) int {
+func (g *GoRythm) calculateScore(beatTime float64) int {
 	elapsed := time.Since(g.startTime).Seconds()
 	if math.Abs(beatTime-elapsed) < perfectPrec {
 		return perfectScore
