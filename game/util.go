@@ -18,11 +18,6 @@ func newRandom() *rand.Rand {
 	return rand.New(s1)
 }
 
-func (g *Game) ResetPoints() {
-	g.pointsO = 0
-	g.pointsX = 0
-}
-
 func (g *Game) placeSymbol(x int, y int) {
 	switch g.currentPlayerSymbol {
 	case O_PLAYING:

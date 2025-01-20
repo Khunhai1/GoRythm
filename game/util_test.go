@@ -7,16 +7,6 @@ import (
 	"testing"
 )
 
-func TestResetPoints(t *testing.T) {
-	g := NewGame()
-	g.pointsO = 5
-	g.pointsX = 3
-	g.ResetPoints()
-	if g.pointsO != 0 || g.pointsX != 0 {
-		t.Errorf("ResetPoints failed, got pointsO=%d, pointsX=%d", g.pointsO, g.pointsX)
-	}
-}
-
 func TestPlaceSymbol(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
