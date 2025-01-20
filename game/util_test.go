@@ -75,7 +75,7 @@ func TestEasyCpu(t *testing.T) {
 	}
 }
 
-func TestCheckWin(t *testing.T) {
+func TestCheckWinBoard(t *testing.T) {
 	g := NewGame()
 	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -86,13 +86,13 @@ func TestCheckWin(t *testing.T) {
 		{NONE_PLAYING, NONE_PLAYING, NONE_PLAYING},
 	}
 
-	winner, _ := g.CheckWin()
+	winner, _ := g.CheckWinBoard()
 	if winner != X_PLAYING {
-		t.Errorf("CheckWin failed, expected X, got %s", winner)
+		t.Errorf("CheckWinBoard failed, expected X, got %s", winner)
 	}
 }
 
-func FuzzCheckWin(f *testing.F) {
+func FuzzCheckWinBoard(f *testing.F) {
 	// Add some seed cases (optional)
 	f.Add("XXX------")
 	f.Add("O--O--O--")
@@ -123,9 +123,9 @@ func FuzzCheckWin(f *testing.F) {
 		g.board = arrBoard
 
 		// Check for a winner
-		winner, _ := g.CheckWin()
+		winner, _ := g.CheckWinBoard()
 		if winner != NONE_PLAYING && winner != X_PLAYING && winner != O_PLAYING {
-			t.Errorf("CheckWin returned an invalid winner: %s", winner)
+			t.Errorf("CheckWinBoard returned an invalid winner: %s", winner)
 		}
 	})
 }

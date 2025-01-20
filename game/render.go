@@ -126,8 +126,8 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	g.DrawGame(screen)
-	if g.win != NONE_PLAYING {
-		_, winningLine := g.CheckWin()
+	if g.win != NONE_PLAYING || g.gameMode == GORYTHM_MODE {
+		_, winningLine := g.CheckWinBoard()
 		if winningLine != nil {
 			dc := gg.NewContext(g.sWidth, g.sWidth)
 			dc.SetColor(theme.WinningLineColor)
@@ -146,6 +146,9 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	if g.win != NONE_PLAYING {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
 		t.DrawText(screen, msgWin, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
+	} else if g.gameMode == GORYTHM_MODE {
+		msgDraw := "Score draw!"
+		t.DrawText(screen, msgDraw, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
 	} else {
 		msgDraw := "It's a draw!"
 		t.DrawText(screen, msgDraw, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)

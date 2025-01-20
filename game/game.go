@@ -240,9 +240,8 @@ func (g *Game) handleStatePlaying() error {
 		}
 	}
 	// Check for win
-	g.win, _ = g.CheckWin()
+	g.win, _ = g.CheckWinBoard()
 	if g.win != NONE_PLAYING {
-		g.state = StateGameOver
 		if g.win == O_PLAYING {
 			if g.gameMode == GORYTHM_MODE {
 				g.pointsO += scorePerWin_GoRythm
@@ -256,6 +255,8 @@ func (g *Game) handleStatePlaying() error {
 				g.pointsX += scorePerWin
 			}
 		}
+		g.win = g.CheckWinScore()
+		g.state = StateGameOver
 	}
 	// Check for draw
 	if g.IsBoardFull() {

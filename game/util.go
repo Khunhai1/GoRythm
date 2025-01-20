@@ -112,7 +112,7 @@ func (g *Game) HardCpu() (int, int) {
 
 func (g *Game) minimax(depth int, isMaximizing bool) int {
 	// Check if game is over
-	winner, _ := g.CheckWin()
+	winner, _ := g.CheckWinBoard()
 	if winner == X_PLAYING {
 		return 10 - depth // Maximize for AI (X)
 	}
@@ -153,7 +153,7 @@ func (g *Game) minimax(depth int, isMaximizing bool) int {
 	}
 }
 
-func (g *Game) CheckWin() (winner SymbolPlaying, position [][]int) {
+func (g *Game) CheckWinBoard() (winner SymbolPlaying, position [][]int) {
 	// Check rows
 	for i := 0; i < 3; i++ {
 		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != NONE_PLAYING {
@@ -174,6 +174,16 @@ func (g *Game) CheckWin() (winner SymbolPlaying, position [][]int) {
 		return g.board[0][2], [][]int{{0, 2}, {1, 1}, {2, 0}}
 	}
 	return NONE_PLAYING, nil
+}
+
+// CheckWinScore checks the winner based on the score and returns the winner
+func (g *Game) CheckWinScore() (winner SymbolPlaying) {
+	if g.pointsO > g.pointsX {
+		return O_PLAYING
+	} else if g.pointsX > g.pointsO {
+		return X_PLAYING
+	}
+	return NONE_PLAYING
 }
 
 func (g *Game) IsBoardFull() bool {
