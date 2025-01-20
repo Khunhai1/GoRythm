@@ -197,6 +197,11 @@ func (g *Game) handleStatePlaying() error {
 		g.goRythm.Start(time.Now())
 		log.LogMessage(log.DEBUG, fmt.Sprintf("Start time: %v", g.goRythm.startTime))
 	}
+	// Stop the game when the music ends
+	if !g.audioPlayer.IsPlaying() {
+		g.CheckWinScore()
+		g.state = StateGameOver
+	}
 	switch {
 	// Human vs easy AI
 	case g.currentPlayerType == AI_TYPE && g.gameMode == EASY_AI_MODE:
@@ -255,7 +260,10 @@ func (g *Game) handleStatePlaying() error {
 				g.pointsX += scorePerWin
 			}
 		}
-		g.win = g.CheckWinScore()
+		// Adjust the winner by the score for GoRythm mode
+		if g.gameMode == GORYTHM_MODE {
+			g.win = g.CheckWinScore()
+		}
 		g.state = StateGameOver
 	}
 	// Check for draw

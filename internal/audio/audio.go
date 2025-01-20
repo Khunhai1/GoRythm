@@ -66,3 +66,7 @@ func (ap *AudioPlayer) Restart() error {
 func (ap *AudioPlayer) Close() error {
 	return ap.player.Close()
 }
+
+func (ap *AudioPlayer) IsPlaying() bool {
+	return ap.player.IsPlaying()
+}
