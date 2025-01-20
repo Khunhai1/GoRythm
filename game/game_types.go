@@ -39,5 +39,6 @@ const (
 	NO_MODE GameMode = iota
 	EASY_AI_MODE
 	HARD_AI_MODE
+	CLASSIC_PVP_MODE
 	GORYTHM_MODE
 )

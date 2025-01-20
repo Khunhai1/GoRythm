@@ -41,22 +41,26 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	t.DrawText(screen, msgDifficulty, t.NormalText, 70, 200, theme.TextColor)
 
 	// Highlight the selected difficulty
+	colorClassic := theme.TextColor
 	colorEasy := theme.TextColor
-	colorMedium := theme.TextColor
 	colorHard := theme.TextColor
+	colorGoRythm := theme.TextColor
 
 	switch g.gameMode {
+	case CLASSIC_PVP_MODE:
+		colorClassic = theme.SelectedTextColor
 	case EASY_AI_MODE:
 		colorEasy = theme.SelectedTextColor
 	case HARD_AI_MODE:
-		colorMedium = theme.SelectedTextColor
-	case GORYTHM_MODE:
 		colorHard = theme.SelectedTextColor
+	case GORYTHM_MODE:
+		colorGoRythm = theme.SelectedTextColor
 	}
 
-	t.DrawText(screen, "1. Easy", t.NormalText, 70, 250, colorEasy)
-	t.DrawText(screen, "2. Hard", t.NormalText, 70, 300, colorMedium)
-	t.DrawText(screen, "3. GoRythm", t.NormalText, 70, 350, colorHard)
+	t.DrawText(screen, "1. PVP - Classic", t.NormalText, 70, 250, colorClassic)
+	t.DrawText(screen, "2. Easy", t.NormalText, 70, 300, colorEasy)
+	t.DrawText(screen, "3. Hard", t.NormalText, 70, 350, colorHard)
+	t.DrawText(screen, "4. GoRythm", t.NormalText, 70, 400, colorGoRythm)
 
 	msgStart := "Press ENTER to start"
 	t.DrawText(screen, msgStart, t.NormalText, g.sWidth/2, g.sHeight/2, theme.TextColor)

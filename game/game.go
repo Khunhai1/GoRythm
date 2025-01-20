@@ -48,7 +48,9 @@ type Game struct {
 }
 
 const (
-	countdownDuration = 3 // The countdown before starting the game (in seconds)
+	countdownDuration   = 3   // The countdown before starting the game (in seconds)
+	scorePerWin         = 1   // The score per win in Classic mode
+	scorePerWin_GoRythm = 250 // The score per win in GoRythm mode
 )
 
 // Global variables
@@ -157,12 +159,15 @@ func (g *Game) handleStateMenu() {
 		g.countdownTime = time.Now()
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
-		g.gameMode = EASY_AI_MODE
+		g.gameMode = CLASSIC_PVP_MODE
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		g.gameMode = HARD_AI_MODE
+		g.gameMode = EASY_AI_MODE
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key3) {
+		g.gameMode = HARD_AI_MODE
+	}
+	if inpututil.IsKeyJustPressed(ebiten.Key4) {
 		g.gameMode = GORYTHM_MODE
 		g.goRythm = NewGoRythm()
 	}
@@ -230,15 +235,26 @@ func (g *Game) handleStatePlaying() error {
 				}
 			}
 		}
+		if g.gameMode == CLASSIC_PVP_MODE {
+			g.currentPlayerType = HUMAN_TYPE
+		}
 	}
 	// Check for win
 	g.win, _ = g.CheckWin()
 	if g.win != NONE_PLAYING {
 		g.state = StateGameOver
 		if g.win == O_PLAYING {
-			g.pointsO += 250
+			if g.gameMode == GORYTHM_MODE {
+				g.pointsO += scorePerWin_GoRythm
+			} else {
+				g.pointsO += scorePerWin
+			}
 		} else {
-			g.pointsX += 250
+			if g.gameMode == GORYTHM_MODE {
+				g.pointsX += scorePerWin_GoRythm
+			} else {
+				g.pointsX += scorePerWin
+			}
 		}
 	}
 	// Check for draw
