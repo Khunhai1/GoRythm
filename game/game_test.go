@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 package game
 
 import (
@@ -60,8 +63,8 @@ func TestGame_handleStatePlaying(t *testing.T) {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 	g.state = StatePlaying
-	g.gameMode = 1
-	g.player = "ai"
+	g.gameMode = EASY_AI_MODE
+	g.currentPlayerType = AI_TYPE
 	if err := g.handleStatePlaying(); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -90,10 +93,10 @@ func TestGame_restartGame(t *testing.T) {
 	if g.rounds != 0 {
 		t.Errorf("Expected rounds to be 0, got %d", g.rounds)
 	}
-	if g.win != "" {
+	if g.win != NONE_PLAYING {
 		t.Errorf("Expected win to be empty, got %s", g.win)
 	}
-	if g.gameMode != 0 {
+	if g.gameMode != NO_MODE {
 		t.Errorf("Expected game mode to be 0, got %d", g.gameMode)
 	}
 	if g.pointsO != 0 {
@@ -110,8 +113,8 @@ func TestGame_randomizeStartingPlayer(t *testing.T) {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 	g.randomizeStartingPlayer()
-	if g.playing != "O" && g.playing != "X" {
-		t.Errorf("Expected playing to be 'O' or 'X', got %s", g.playing)
+	if g.currentPlayerSymbol != O_PLAYING && g.currentPlayerSymbol != X_PLAYING {
+		t.Errorf("Expected playing to be 'O' or 'X', got %s", g.currentPlayerSymbol)
 	}
 }
 
@@ -121,13 +124,13 @@ func TestGame_performMove(t *testing.T) {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 	g.randomizeStartingPlayer()
-	startingPlayer := g.playing
+	startingPlayer := g.currentPlayerSymbol
 	g.performMove(0, 0)
 
 	if g.board[0][0] != startingPlayer {
 		t.Errorf("Expected %s at position (0,0), got %s", startingPlayer, g.board[0][0])
 	}
-	if g.playing == startingPlayer {
+	if g.currentPlayerSymbol == startingPlayer {
 		t.Errorf("Expected player to switch, but it didn't")
 	}
 	if g.rounds != 1 {

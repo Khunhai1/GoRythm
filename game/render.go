@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 package game
 
 import (
@@ -32,7 +35,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) DrawMenu(screen *ebiten.Image) {
-	msgTitle := "GopherTicTacToe"
+	msgTitle := "GoRythm"
 	t.DrawText(screen, msgTitle, t.BigText, 30, 100, theme.TextColor)
 	msgDifficulty := "Choose difficulty:"
 	t.DrawText(screen, msgDifficulty, t.NormalText, 70, 200, theme.TextColor)
@@ -43,11 +46,11 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	colorHard := theme.TextColor
 
 	switch g.gameMode {
-	case 1:
+	case EASY_AI_MODE:
 		colorEasy = theme.SelectedTextColor
-	case 2:
+	case HARD_AI_MODE:
 		colorMedium = theme.SelectedTextColor
-	case 3:
+	case GORYTHM_MODE:
 		colorHard = theme.SelectedTextColor
 	}
 
@@ -78,7 +81,7 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	screen.DrawImage(g.boardImage, nil)
 	screen.DrawImage(g.gameImage, nil)
 
-	if g.gameMode == 3 {
+	if g.gameMode == GORYTHM_MODE {
 		// Calculate the elapsed time
 		elapsed := time.Since(g.goRythm.startTime).Seconds()
 
@@ -113,13 +116,13 @@ func (g *Game) DrawGame(screen *ebiten.Image) {
 	msgOX := fmt.Sprintf("O Score: %v | X Score: %v", g.pointsO, g.pointsX)
 	t.DrawText(screen, msgOX, t.NormalText, (g.sWidth-150)/2, g.sHeight-5, theme.TextColor)
 
-	msgPlayer := fmt.Sprintf("Player: %v", g.playing)
+	msgPlayer := fmt.Sprintf("Player: %v", g.currentPlayerSymbol)
 	t.DrawText(screen, msgPlayer, t.NormalText, 10, g.sHeight-50, theme.TextColor)
 }
 
 func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	g.DrawGame(screen)
-	if g.win != "" {
+	if g.win != NONE_PLAYING {
 		_, winningLine := g.CheckWin()
 		if winningLine != nil {
 			dc := gg.NewContext(g.sWidth, g.sWidth)
@@ -136,7 +139,7 @@ func (g *Game) DrawGameOver(screen *ebiten.Image) {
 	}
 	msgPressEnter := "Press ENTER to play again"
 	t.DrawText(screen, msgPressEnter, t.NormalText, (g.sWidth-150)/2, g.sHeight-30, theme.TextColor)
-	if g.win != "" {
+	if g.win != NONE_PLAYING {
 		msgWin := fmt.Sprintf("%v wins!", g.win)
 		t.DrawText(screen, msgWin, t.BigText, (g.sWidth-150)/2, g.sHeight-100, theme.GameOverTextColor)
 	} else {

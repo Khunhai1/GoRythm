@@ -1,3 +1,8 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
+// Package game contains the GoRythm game logic as well as the classic Tic-Tac-Toe game logic.
+// It uses the Ebiten library for the game engine, rendering, inputs and audio.
 package game
 
 import (
@@ -11,19 +16,20 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+// A Game struct contains all the game variables to handle the game logic.
 type Game struct {
 	sWidth  int // The screen width
 	sHeight int // The screen height
 
-	state    GameState    // The current game state
-	gameMode int          // The game mode (1 = easy AI, 2 = hard AI, 3 = GoRythm mode)
-	playing  string       // The current turn player ("O" or "X")
-	player   string       // The player type ("human" or "ai")
-	board    [3][3]string // The game board
-	pointsO  int          // The point number for player O
-	pointsX  int          // The point number for player X
-	rounds   int          // The number of rounds
-	win      string       // The win status
+	state               GameState           // The current game state
+	gameMode            GameMode            // The game mode selected
+	currentPlayerSymbol SymbolPlaying       // The current turn player ("O" or "X")
+	currentPlayerType   PlayerType          // The current turn player type ("human" or "ai")
+	board               [3][3]SymbolPlaying // The game board
+	pointsO             int                 // The point number for player O
+	pointsX             int                 // The point number for player X
+	rounds              int                 // The number of rounds
+	win                 SymbolPlaying       // The winning player ("O" or "X")
 
 	goRythm *GoRythm // GoRythm mode game struct
 
@@ -40,18 +46,8 @@ type Game struct {
 	EmptyImage                           *ebiten.Image // The empty symbol image (for removing symbols in GoRythm mode)
 }
 
-type GameState int
-
 const (
-	StateMenu GameState = iota
-	StateLoading
-	StatePlaying
-	StatePause
-	StateGameOver
-)
-
-const (
-	countdownDuration = 3
+	countdownDuration = 3 // The countdown before starting the game (in seconds)
 )
 
 // Global variables
@@ -81,22 +77,22 @@ var (
 
 func NewGame() *Game {
 	return &Game{
-		sWidth:        0,
-		sHeight:       0,
-		state:         StateMenu,
-		gameMode:      0,
-		playing:       "",
-		player:        "",
-		board:         [3][3]string{},
-		pointsO:       0,
-		pointsX:       0,
-		rounds:        0,
-		win:           "",
-		goRythm:       nil,
-		audioContext:  nil,
-		audioPlayer:   nil,
-		countdownTime: time.Time{},
-		countdown:     countdownDuration,
+		sWidth:              0,
+		sHeight:             0,
+		state:               StateMenu,
+		gameMode:            NO_MODE,
+		currentPlayerSymbol: NONE_PLAYING,
+		currentPlayerType:   NO_PLAYER,
+		board:               [3][3]SymbolPlaying{},
+		pointsO:             0,
+		pointsX:             0,
+		rounds:              0,
+		win:                 NONE_PLAYING,
+		goRythm:             nil,
+		audioContext:        nil,
+		audioPlayer:         nil,
+		countdownTime:       time.Time{},
+		countdown:           countdownDuration,
 	}
 }
 
@@ -160,19 +156,19 @@ func (g *Game) handleStateMenu() {
 		g.countdownTime = time.Now()
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
-		g.gameMode = 1
+		g.gameMode = EASY_AI_MODE
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		g.gameMode = 2
+		g.gameMode = HARD_AI_MODE
 	}
 	if inpututil.IsKeyJustPressed(ebiten.Key3) {
-		g.gameMode = 3
+		g.gameMode = GORYTHM_MODE
 		g.goRythm = NewGoRythm()
 	}
 }
 
 func (g *Game) handleStateLoading() error {
-	g.player = "human"
+	g.currentPlayerType = HUMAN_TYPE
 	if g.countdown > 0 {
 		elapsed := time.Since(g.countdownTime)
 		if elapsed >= time.Second {
@@ -191,29 +187,29 @@ func (g *Game) handleStateLoading() error {
 }
 
 func (g *Game) handleStatePlaying() error {
-	if g.gameMode == 3 && g.goRythm.startTime.IsZero() {
+	if g.gameMode == GORYTHM_MODE && g.goRythm.startTime.IsZero() {
 		g.goRythm.Start(time.Now())
 		log.LogMessage(log.DEBUG, fmt.Sprintf("Start time: %v", g.goRythm.startTime))
 	}
 	switch {
 	// Human vs easy AI
-	case g.player == "ai" && g.gameMode == 1:
+	case g.currentPlayerType == AI_TYPE && g.gameMode == EASY_AI_MODE:
 		x, y := g.EasyCpu()
 		g.performMove(x, y)
 	// Human vs hard AI
-	case g.player == "ai" && g.gameMode == 2:
+	case g.currentPlayerType == AI_TYPE && g.gameMode == HARD_AI_MODE:
 		x, y := g.HardCpu()
 		g.performMove(x, y)
 	// Human vs human
-	case g.player == "human":
+	case g.currentPlayerType == HUMAN_TYPE:
 		for key, pos := range keyboardToBoard {
 			if inpututil.IsKeyJustPressed(key) {
 				x, y := pos[0], pos[1]
-				if g.board[x][y] == "" {
+				if g.board[x][y] == NONE_PLAYING {
 					// GoRythm mode
-					if g.gameMode == 3 {
+					if g.gameMode == GORYTHM_MODE {
 						// Remove and highlight symbols if needed
-						remove, highlight, toRemove, toHighlight := g.goRythm.Update(g.playing, x, y)
+						remove, highlight, toRemove, toHighlight := g.goRythm.Update(g.currentPlayerSymbol, x, y)
 						if remove {
 							g.removeSymbol(toRemove[0], toRemove[1])
 						}
@@ -222,10 +218,10 @@ func (g *Game) handleStatePlaying() error {
 						}
 						// Calculating score on hitting the beat
 						score := g.goRythm.CalculateScore()
-						switch g.playing {
-						case "O":
+						switch g.currentPlayerSymbol {
+						case O_PLAYING:
 							g.pointsO += score
-						case "X":
+						case X_PLAYING:
 							g.pointsX += score
 						}
 					}
@@ -236,9 +232,9 @@ func (g *Game) handleStatePlaying() error {
 	}
 	// Check for win
 	g.win, _ = g.CheckWin()
-	if g.win != "" {
+	if g.win != NONE_PLAYING {
 		g.state = StateGameOver
-		if g.win == "O" {
+		if g.win == O_PLAYING {
 			g.pointsO += 250
 		} else {
 			g.pointsX += 250
@@ -268,13 +264,13 @@ func (g *Game) handleStateGameOver() error {
 
 // Restart the game and reset the variables
 func (g *Game) restartGame() {
-	g.board = [3][3]string{} // Reset the game board
-	g.rounds = 0             // Reset the number of rounds
-	g.win = ""               // Reset the win status
-	g.gameMode = 0           // Reset the game mode
-	g.countdown = 3          // Reset the countdown timer
-	g.pointsO = 0            // Reset the points for O
-	g.pointsX = 0            // Reset the points for X
+	g.board = [3][3]SymbolPlaying{} // Reset the game board
+	g.rounds = 0                    // Reset the number of rounds
+	g.win = NONE_PLAYING            // Reset the win status
+	g.gameMode = NO_MODE            // Reset the game mode
+	g.countdown = 3                 // Reset the countdown timer
+	g.pointsO = 0                   // Reset the points for O
+	g.pointsX = 0                   // Reset the points for X
 
 	g.randomizeStartingPlayer() // Randomize the starting player
 }
@@ -289,9 +285,9 @@ func (g *Game) performMove(x, y int) {
 // Randomizes the starting player
 func (g *Game) randomizeStartingPlayer() {
 	if r := newRandom().Intn(2) == 0; r {
-		g.playing = "O"
+		g.currentPlayerSymbol = O_PLAYING
 	} else {
-		g.playing = "X"
+		g.currentPlayerSymbol = X_PLAYING
 	}
 }
 

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 package game
 
 import (
@@ -57,17 +60,17 @@ func (g *GoRythm) Start(startTime time.Time) {
 // Update the game state and return the coordinates where a symbol should be removed or highlighted.
 // A maximum of three symbols per player can be placed on the board. When the third symbol is placed, the first symbol is removed.
 // The next symbol to be removed in the next round is highlighted.
-func (g *GoRythm) Update(playing string, x, y int) (remove, highlight bool, toRemove, toHighlight [2]int) {
+func (g *GoRythm) Update(playing SymbolPlaying, x, y int) (remove, highlight bool, toRemove, toHighlight [2]int) {
 	// Check if there is a move to remove
 	remove, toRemove = g.moveToRemove(playing)
 
 	// Update the moves
-	if playing == "X" {
+	if playing == X_PLAYING {
 		if len(g.movesX) == 2 {
 			g.toBeRemovedX = <-g.movesX
 		}
 		g.movesX <- [2]int{x, y}
-	} else if playing == "O" {
+	} else if playing == O_PLAYING {
 		if len(g.movesO) == 2 {
 			g.toBeRemovedO = <-g.movesO
 		}
@@ -82,13 +85,13 @@ func (g *GoRythm) Update(playing string, x, y int) (remove, highlight bool, toRe
 	return remove, highlight, toRemove, toHighlight
 }
 
-func (g *GoRythm) moveToRemove(playing string) (remove bool, toRemove [2]int) {
-	if playing == "X" {
+func (g *GoRythm) moveToRemove(playing SymbolPlaying) (remove bool, toRemove [2]int) {
+	if playing == X_PLAYING {
 		if g.toBeRemovedX != noMove {
 			return true, g.toBeRemovedX
 		}
 		return false, noMove
-	} else if playing == "O" {
+	} else if playing == O_PLAYING {
 		if g.toBeRemovedO != noMove {
 			return true, g.toBeRemovedO
 		}
@@ -97,13 +100,13 @@ func (g *GoRythm) moveToRemove(playing string) (remove bool, toRemove [2]int) {
 	panic("Invalid player")
 }
 
-func (g *GoRythm) moveToHighlight(playing string) (highlight bool, toHighlight [2]int) {
-	if playing == "X" {
+func (g *GoRythm) moveToHighlight(playing SymbolPlaying) (highlight bool, toHighlight [2]int) {
+	if playing == X_PLAYING {
 		if len(g.movesX) == 2 && g.toBeRemovedX != noMove {
 			return true, g.toBeRemovedX
 		}
 		return false, noMove
-	} else if playing == "O" {
+	} else if playing == O_PLAYING {
 		if len(g.movesO) == 2 && g.toBeRemovedO != noMove {
 			return true, g.toBeRemovedO
 		}

@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 package game
 
 import (
@@ -8,12 +11,12 @@ import (
 )
 
 const (
-	cellSize          = 160
-	gridLineThickness = 2
-	effectiveCellSize = cellSize - gridLineThickness/2
-	symbolThickness   = 15
-	xLinesWidth       = 20
-	symbolSpacing     = 20
+	cellSize          = 160                            // Cell size in pixels (square)
+	gridLineThickness = 2                              // Grid line thickness in pixels
+	effectiveCellSize = cellSize - gridLineThickness/2 // Effective cell size in pixels (square) without grid line taking some space
+	symbolThickness   = 15                             // Symbol thickness in pixels
+	xLinesWidth       = 20                             // X symbol lines width in pixels
+	symbolSpacing     = 20                             // Symbol spacing in pixels
 )
 
 func (g *Game) GenerateBoard(screen *ebiten.Image, sWidth int) *ebiten.Image {

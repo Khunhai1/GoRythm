@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 // Package audio provides audio player feature for playing music in the GoRythm
 // game as well as the beatmap struct, which contains the time and beat number
 // of each beat.

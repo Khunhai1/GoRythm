@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Elian Waeber & Valentin Roch
+// SPDX-License-Identifier: Apache-2.0
+
 package game
 
 import (
@@ -19,14 +22,14 @@ func (g *Game) ResetPoints() {
 }
 
 func (g *Game) placeSymbol(x int, y int) {
-	switch g.playing {
-	case "O":
-		g.board[x][y] = "O"
+	switch g.currentPlayerSymbol {
+	case O_PLAYING:
+		g.board[x][y] = O_PLAYING
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		g.gameImage.DrawImage(g.OImage, options)
-	case "X":
-		g.board[x][y] = "X"
+	case X_PLAYING:
+		g.board[x][y] = X_PLAYING
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		g.gameImage.DrawImage(g.XImage, options)
@@ -34,19 +37,19 @@ func (g *Game) placeSymbol(x int, y int) {
 }
 
 func (g *Game) removeSymbol(x, y int) {
-	g.board[x][y] = ""
+	g.board[x][y] = NONE_PLAYING
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 	g.gameImage.DrawImage(g.EmptyImage, options)
 }
 
 func (g *Game) highlightSymbol(x, y int) {
-	switch g.playing {
-	case "O":
+	switch g.currentPlayerSymbol {
+	case O_PLAYING:
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		g.gameImage.DrawImage(g.OImageHighlighted, options)
-	case "X":
+	case X_PLAYING:
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x*cellSize), float64(y*cellSize))
 		g.gameImage.DrawImage(g.XImageHighlighted, options)
@@ -54,16 +57,16 @@ func (g *Game) highlightSymbol(x, y int) {
 }
 
 func (g *Game) switchPlayer() {
-	if g.playing == "X" {
-		g.playing = "O"
+	if g.currentPlayerSymbol == X_PLAYING {
+		g.currentPlayerSymbol = O_PLAYING
 	} else {
-		g.playing = "X"
+		g.currentPlayerSymbol = X_PLAYING
 	}
-	if g.gameMode != 3 {
-		if g.player == "human" {
-			g.player = "ai"
+	if g.gameMode != GORYTHM_MODE {
+		if g.currentPlayerType == HUMAN_TYPE {
+			g.currentPlayerType = AI_TYPE
 		} else {
-			g.player = "human"
+			g.currentPlayerType = HUMAN_TYPE
 		}
 	}
 }
@@ -74,7 +77,7 @@ func (g *Game) EasyCpu() (int, int) {
 	for {
 		x = r.Intn(3)
 		y = r.Intn(3)
-		if g.board[x][y] == "" {
+		if g.board[x][y] == NONE_PLAYING {
 			break
 		}
 	}
@@ -88,11 +91,11 @@ func (g *Game) HardCpu() (int, int) {
 	// Minimax with increased depth
 	for x := 0; x < 3; x++ {
 		for y := 0; y < 3; y++ {
-			if g.board[x][y] == "" {
+			if g.board[x][y] == NONE_PLAYING {
 				// Simulate the move
-				g.board[x][y] = "X"
+				g.board[x][y] = X_PLAYING
 				score := g.minimax(0, false)
-				g.board[x][y] = "" // Undo the move
+				g.board[x][y] = NONE_PLAYING // Undo the move
 
 				// Keep track of the best move
 				if score > bestScore {
@@ -108,10 +111,10 @@ func (g *Game) HardCpu() (int, int) {
 func (g *Game) minimax(depth int, isMaximizing bool) int {
 	// Check if game is over
 	winner, _ := g.CheckWin()
-	if winner == "X" {
+	if winner == X_PLAYING {
 		return 10 - depth // Maximize for AI (X)
 	}
-	if winner == "O" {
+	if winner == O_PLAYING {
 		return depth - 10 // Minimize for Player (O)
 	}
 	if g.IsBoardFull() {
@@ -123,10 +126,10 @@ func (g *Game) minimax(depth int, isMaximizing bool) int {
 		bestScore := math.MinInt
 		for x := 0; x < 3; x++ {
 			for y := 0; y < 3; y++ {
-				if g.board[x][y] == "" {
-					g.board[x][y] = "X" // AI's move
+				if g.board[x][y] == NONE_PLAYING {
+					g.board[x][y] = X_PLAYING // AI's move
 					score := g.minimax(depth+1, false)
-					g.board[x][y] = "" // Undo the move
+					g.board[x][y] = NONE_PLAYING // Undo the move
 					bestScore = max(bestScore, score)
 				}
 			}
@@ -136,10 +139,10 @@ func (g *Game) minimax(depth int, isMaximizing bool) int {
 		bestScore := math.MaxInt
 		for x := 0; x < 3; x++ {
 			for y := 0; y < 3; y++ {
-				if g.board[x][y] == "" {
-					g.board[x][y] = "O" // Human's move
+				if g.board[x][y] == NONE_PLAYING {
+					g.board[x][y] = O_PLAYING // Human's move
 					score := g.minimax(depth+1, true)
-					g.board[x][y] = "" // Undo the move
+					g.board[x][y] = NONE_PLAYING // Undo the move
 					bestScore = min(bestScore, score)
 				}
 			}
@@ -148,33 +151,33 @@ func (g *Game) minimax(depth int, isMaximizing bool) int {
 	}
 }
 
-func (g *Game) CheckWin() (string, [][]int) {
+func (g *Game) CheckWin() (winner SymbolPlaying, position [][]int) {
 	// Check rows
 	for i := 0; i < 3; i++ {
-		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != "" {
+		if g.board[i][0] == g.board[i][1] && g.board[i][1] == g.board[i][2] && g.board[i][0] != NONE_PLAYING {
 			return g.board[i][0], [][]int{{0, i}, {1, i}, {2, i}}
 		}
 	}
 	// Check columns
 	for i := 0; i < 3; i++ {
-		if g.board[0][i] == g.board[1][i] && g.board[1][i] == g.board[2][i] && g.board[0][i] != "" {
+		if g.board[0][i] == g.board[1][i] && g.board[1][i] == g.board[2][i] && g.board[0][i] != NONE_PLAYING {
 			return g.board[0][i], [][]int{{i, 0}, {i, 1}, {i, 2}}
 		}
 	}
 	// Check diagonals
-	if g.board[0][0] == g.board[1][1] && g.board[1][1] == g.board[2][2] && g.board[0][0] != "" {
+	if g.board[0][0] == g.board[1][1] && g.board[1][1] == g.board[2][2] && g.board[0][0] != NONE_PLAYING {
 		return g.board[0][0], [][]int{{0, 0}, {1, 1}, {2, 2}}
 	}
-	if g.board[0][2] == g.board[1][1] && g.board[1][1] == g.board[2][0] && g.board[0][2] != "" {
+	if g.board[0][2] == g.board[1][1] && g.board[1][1] == g.board[2][0] && g.board[0][2] != NONE_PLAYING {
 		return g.board[0][2], [][]int{{0, 2}, {1, 1}, {2, 0}}
 	}
-	return "", nil
+	return NONE_PLAYING, nil
 }
 
 func (g *Game) IsBoardFull() bool {
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if g.board[i][j] == "" {
+			if g.board[i][j] == NONE_PLAYING {
 				return false
 			}
 		}
