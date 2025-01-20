@@ -4,6 +4,11 @@ import (
 	"testing"
 )
 
+const (
+	sWidth  = 640
+	sHeight = 480
+)
+
 func TestNewGame(t *testing.T) {
 	g := NewGame()
 	if g == nil {
@@ -16,11 +21,10 @@ func TestNewGame(t *testing.T) {
 
 func TestGame_Init(t *testing.T) {
 	g := NewGame()
-	err := g.Init(audioContext, 640, 480)
-	if err != nil {
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if g.sWidth != 640 || g.sHeight != 480 {
+	if g.sWidth != sWidth || g.sHeight != sHeight {
 		t.Errorf("Expected screen size to be 640x480, got %dx%d", g.sWidth, g.sHeight)
 	}
 	if g.audioPlayer == nil {
@@ -30,16 +34,20 @@ func TestGame_Init(t *testing.T) {
 
 func TestGame_Layout(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	screenWidth, screenHeight := g.Layout(800, 600)
-	if screenWidth != 640 || screenHeight != 480 {
+	if screenWidth != sWidth || screenHeight != sHeight {
 		t.Errorf("Expected layout size to be 640x480, got %dx%d", screenWidth, screenHeight)
 	}
 }
 
 func TestGame_handleStateMenu(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.handleStateMenu()
 	if g.state != StateMenu {
 		t.Errorf("Expected state to be StateMenu, got %v", g.state)
@@ -48,22 +56,24 @@ func TestGame_handleStateMenu(t *testing.T) {
 
 func TestGame_handleStatePlaying(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.state = StatePlaying
 	g.gameMode = 1
 	g.player = "ai"
-	err := g.handleStatePlaying()
-	if err != nil {
+	if err := g.handleStatePlaying(); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 }
 
 func TestGame_handleStateGameOver(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.state = StateGameOver
-	err := g.handleStateGameOver()
-	if err != nil {
+	if err := g.handleStateGameOver(); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 	if g.state != StateGameOver {
@@ -73,7 +83,9 @@ func TestGame_handleStateGameOver(t *testing.T) {
 
 func TestGame_restartGame(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.restartGame()
 	if g.rounds != 0 {
 		t.Errorf("Expected rounds to be 0, got %d", g.rounds)
@@ -94,7 +106,9 @@ func TestGame_restartGame(t *testing.T) {
 
 func TestGame_randomizeStartingPlayer(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.randomizeStartingPlayer()
 	if g.playing != "O" && g.playing != "X" {
 		t.Errorf("Expected playing to be 'O' or 'X', got %s", g.playing)
@@ -103,7 +117,9 @@ func TestGame_randomizeStartingPlayer(t *testing.T) {
 
 func TestGame_performMove(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 640, 480)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.randomizeStartingPlayer()
 	startingPlayer := g.playing
 	g.performMove(0, 0)

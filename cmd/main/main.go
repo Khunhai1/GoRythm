@@ -11,13 +11,14 @@ import (
 )
 
 const (
-	sWidth  = 480
-	sHeight = 700
-	title   = "GoRythm"
+	sWidth     = 480
+	sHeight    = 700
+	title      = "GoRythm"
+	sampleRate = 44100
 )
 
 func main() {
-	audioContext := audio.NewContext(44100) // Initialize the audio context once
+	audioContext := audio.NewContext(sampleRate) // Initialize the audio context once
 
 	// Initialize the game
 	game := game.NewGame()

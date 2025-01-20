@@ -16,7 +16,9 @@ func TestResetPoints(t *testing.T) {
 
 func TestPlaceSymbol(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.playing = "O"
 	g.placeSymbol(0, 0)
 	if g.board[0][0] != "O" {
@@ -26,7 +28,9 @@ func TestPlaceSymbol(t *testing.T) {
 
 func TestRemoveSymbol(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.board[1][1] = "O"
 	g.removeSymbol(1, 1)
 
@@ -37,7 +41,9 @@ func TestRemoveSymbol(t *testing.T) {
 
 func TestSwitchPlayer(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.playing = "X"
 	g.switchPlayer()
 	if g.playing != "O" {
@@ -52,7 +58,9 @@ func TestSwitchPlayer(t *testing.T) {
 
 func TestEasyCpu(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.board = [3][3]string{
 		{"", "", "X"},
 		{"O", "X", "O"},
@@ -66,7 +74,9 @@ func TestEasyCpu(t *testing.T) {
 
 func TestCheckWin(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.board = [3][3]string{
 		{"X", "X", "X"},
 		{"O", "O", ""},
@@ -81,7 +91,9 @@ func TestCheckWin(t *testing.T) {
 
 func TestIsBoardFull(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.board = [3][3]string{
 		{"X", "O", "X"},
 		{"O", "X", "O"},
@@ -100,7 +112,9 @@ func TestIsBoardFull(t *testing.T) {
 
 func TestHardCpu(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	g.board = [3][3]string{
 		{"X", "", "O"},
 		{"O", "X", ""},
@@ -114,7 +128,9 @@ func TestHardCpu(t *testing.T) {
 
 func TestMinimax_WinForX(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 
 	// X is about to win
 	g.board = [3][3]string{
@@ -131,7 +147,9 @@ func TestMinimax_WinForX(t *testing.T) {
 
 func TestMinimax_WinForO(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	// O is about to win
 	g.board = [3][3]string{
 		{"O", "O", ""},
@@ -147,7 +165,9 @@ func TestMinimax_WinForO(t *testing.T) {
 
 func TestMinimax_Draw(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	// The board is full, and it's a draw
 	g.board = [3][3]string{
 		{"X", "O", "X"},
@@ -163,7 +183,9 @@ func TestMinimax_Draw(t *testing.T) {
 
 func TestMinimax_BestMove(t *testing.T) {
 	g := NewGame()
-	g.Init(audioContext, 480, 700)
+	if err := g.Init(audioContext, sWidth, sHeight); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 	// The AI (X) has multiple moves to choose from
 	g.board = [3][3]string{
 		{"X", "O", ""},
